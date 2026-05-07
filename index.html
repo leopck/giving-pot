@@ -139,14 +139,14 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
     <div style="text-align:center">
       <div class="ey">✈ Generous Travellers</div>
       <div class="gt" style="font-size:clamp(38px,10vw,58px);line-height:1.05">The<br>Giving Pot</div>
-      <div style="font-size:13px;color:rgba(244,237,213,.48);line-height:1.7;max-width:280px;margin:8px auto 0">
+      <div id="home-sub" style="font-size:13px;color:rgba(244,237,213,.48);line-height:1.7;max-width:280px;margin:8px auto 0">
         Spin the wheel to fairly decide how much each generous soul chips in.
       </div>
     </div>
     <div class="card col" style="gap:11px">
       <input type="text" id="inp-name" placeholder="Your name" maxlength="18" autocomplete="off">
       <button class="btn btn-gold btn-full" id="btn-create" onclick="createRoom()">Create a Game Room →</button>
-      <div class="or-div">or join existing room</div>
+      <div class="or-div" id="home-or">or join existing room</div>
       <input type="text" id="inp-code" placeholder="ROOM CODE" maxlength="4"
         style="letter-spacing:6px;text-align:center;text-transform:uppercase" autocomplete="off"
         oninput="this.value=this.value.toUpperCase()">
@@ -402,10 +402,10 @@ function calcSpinEnd(startRot, targetIdx, extraSpins) {
   return startRot + extraSpins + alignDelta;
 }
 
-function animateSpin(onDone) {
+function animateSpin(onDone, forcedIdx) {
   if (isSpinning) return;
   isSpinning = true;
-  const targetIdx = Math.floor(Math.random() * NSEG);
+  const targetIdx = (forcedIdx !== undefined) ? forcedIdx : Math.floor(Math.random() * NSEG);
   const seg = SEGS[targetIdx];
   const extraSpins = (6 + Math.floor(Math.random() * 5)) * 2 * Math.PI;
   const end = calcSpinEnd(wheelRot, targetIdx, extraSpins);
@@ -522,12 +522,28 @@ function copyLink(){
 }
 
 // ── Remote sync ───────────────────────────────────────────────────────
+let _lastSeenSpinKey = ""; // "day-spins" — detects new spin results arriving for the observer
+
 function onRemoteUpdate(data){
   const cur=document.querySelector(".screen.active")?.id;
   if(cur==="s-lobby"&&data.ready&&data.p2){show("s-game");renderGame();return;}
-  // p2's choice came in — if p1c is already set, resolve (only p1 resolves)
   if(data.phase==="rps"&&data.rps.p1c&&data.rps.p2c&&G.myId==="p1"){
     resolveRPS(data); return;
+  }
+  // Observer: when spinner's new result arrives, mirror the spin animation locally
+  if((data.phase==="wheel"||data.phase==="done") &&
+      data.spinner && data.spinner!==G.myId &&
+      data.spins>0 && data.lastAmt!=null && !isSpinning){
+    const spinKey=data.day+"-"+data.spins;
+    if(spinKey!==_lastSeenSpinKey){
+      _lastSeenSpinKey=spinKey;
+      const matching=SEGS.map((s,i)=>({s,i})).filter(({s})=>s.amt===data.lastAmt);
+      if(matching.length){
+        const forcedIdx=matching[Math.floor(Math.random()*matching.length)].i;
+        animateSpin(()=>renderGame(), forcedIdx);
+        return; // renderGame fires after animation finishes
+      }
+    }
   }
   renderGame();
 }
@@ -603,6 +619,7 @@ function doSpin(){
 }
 
 function nextDay(){
+  _lastSeenSpinKey="";
   roomUpdate(p=>({...p,day:p.day+1,phase:"rps",spins:0,lastAmt:null,
     spinner:null,rpsWinner:null,
     rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null}}));
@@ -611,6 +628,8 @@ function nextDay(){
 // ── Render ────────────────────────────────────────────────────────────
 function renderGame(){
   const r=G.room; if(!r) return;
+  const cur=document.querySelector(".screen.active")?.id;
+  if(cur==="s-summary") return; // don't yank user off summary when a poll fires
   show("s-game");
   const opp=G.myId==="p1"?"p2":"p1";
   const myN=G.myName, oppN=G.myId==="p1"?r.p2:r.p1;
@@ -753,7 +772,11 @@ const _urlRoom=new URLSearchParams(location.search).get("room");
 if(_urlRoom){
   const c=_urlRoom.toUpperCase().replace(/[^A-Z]/g,"").slice(0,4);
   document.getElementById("inp-code").value=c;
-  setTimeout(()=>toast("Room "+c+" detected — enter your name and tap Join! 👇"),400);
+  // Hide the "create" half — this person is joining, not hosting
+  document.getElementById("btn-create").classList.add("hidden");
+  document.getElementById("home-or").classList.add("hidden");
+  document.getElementById("home-sub").textContent="You've been invited! Enter your name below to join room "+c+".";
+  setTimeout(()=>document.getElementById("inp-name").focus(), 300);
 }
 </script>
 </body>
