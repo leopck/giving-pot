@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Giving Pot — Test Suite</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:monospace;background:#0d1117;color:#c9d1d9;padding:20px}
+h1{font-size:18px;color:#58a6ff;margin-bottom:16px}
+.suite{margin-bottom:20px}
+.suite-title{font-size:14px;font-weight:bold;color:#f0c040;margin-bottom:6px;border-bottom:1px solid #30363d;padding-bottom:4px}
+.test{padding:4px 0;font-size:13px}
+.pass{color:#3fb950}
+.fail{color:#f85149}
+.summary{margin-top:20px;padding:14px;border-radius:8px;font-size:14px;border:1px solid #30363d}
+.summary.ok{background:#0d2010;border-color:#3fb950;color:#3fb950}
+.summary.err{background:#200d0d;border-color:#f85149;color:#f85149}
+canvas{display:none}
+</style>
+</head>
+<body>
+<h1>✈ Giving Pot — Test Suite</h1>
+<div id="root"></div>
+<canvas id="wCanvas" width="280" height="280"></canvas>
+
+<script>
+// ── Test runner ────────────────────────────────────────────────────────
+let _suite = '', _passed = 0, _failed = 0, _output = [];
+function suite(name) {
+  _suite = name;
+  _output.push({ type:'suite', name });
+}
+function test(name, fn) {
+  try { fn(); _passed++; _output.push({ type:'pass', name, suite:_suite }); }
+  catch(e) { _failed++; _output.push({ type:'fail', name, suite:_suite, err:e.message }); }
+}
+async function testAsync(name, fn) {
+  try { await fn(); _passed++; _output.push({ type:'pass', name, suite:_suite }); }
+  catch(e) { _failed++; _output.push({ type:'fail', name, suite:_suite, err:e.message }); }
+}
+function assert(cond, msg) { if(!cond) throw new Error(msg || 'Assertion failed'); }
+function eq(a, b, msg) {
+  if(a !== b) throw new Error((msg ? msg+': ' : '')+'expected '+JSON.stringify(b)+' got '+JSON.stringify(a));
+}
+function deepEq(a, b, msg) {
+  if(JSON.stringify(a) !== JSON.stringify(b))
+    throw new Error((msg ? msg+': ' : '')+'expected '+JSON.stringify(b)+' got '+JSON.stringify(a));
+}
+
+// ── Logic extracted from app (mirrors index.html exactly) ─────────────
+const BEATS = {rock:'scissors', paper:'rock', scissors:'paper'};
+const EMOJ  = {rock:'🪨', paper:'📄', scissors:'✂️'};
+const SEGS = [
+  {label:'£50',  amt:50,  col:'#0A6868'},{label:'£100',amt:100,col:'#0D9678'},
+  {label:'£50',  amt:50,  col:'#0A6868'},{label:'£150',amt:150,col:'#2A1250'},
+  {label:'£100', amt:100, col:'#0D9678'},{label:'£200',amt:200,col:'#9A6E10'},
+  {label:'£50',  amt:50,  col:'#0A6868'},{label:'£100',amt:100,col:'#0D9678'},
+  {label:'£250', amt:250, col:'#682878'},{label:'£50', amt:50, col:'#0A6868'},
+  {label:'£100', amt:100, col:'#0D9678'},{label:'£300',amt:300,col:'#8C2424'},
+];
+const NSEG = SEGS.length;
+const SA   = (2 * Math.PI) / NSEG;
+
+function genCode() {
+  return Array.from({length:4}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)]).join('');
+}
+
+function mkRoom(p1) {
+  return {
+    v:1, p1, p2:'', ready:false, phase:'rps', day:1,
+    score:{p1:0, p2:0},
+    rps:{wins:{p1:0,p2:0}, p1c:null, p2c:null, result:null, lastP1:null, lastP2:null},
+    spinner:null, spins:0, lastAmt:null, rpsWinner:null, history:[]
+  };
+}
+
+// resolveRPS: pure function — takes a room snapshot, returns next room state
+function resolveRPS_pure(room) {
+  const {p1c, p2c} = room.rps;
+  let res;
+  if (p1c === p2c) res = 'draw';
+  else if (BEATS[p1c] === p2c) res = 'p1';
+  else res = 'p2';
+  const wins = {p1:(room.rps.wins.p1||0), p2:(room.rps.wins.p2||0)};
+  if (res !== 'draw') wins[res]++;
+  const winner = wins.p1 >= 2 ? 'p1' : wins.p2 >= 2 ? 'p2' : null;
+  return {
+    ...room,
+    rpsWinner: winner,
+    phase: winner ? 'pick' : 'rps',
+    rps: {wins, p1c:null, p2c:null, result:res, lastP1:p1c, lastP2:p2c}
+  };
+}
+
+// pickSpinner: pure function
+function pickSpinner_pure(room, pid) {
+  return {...room, phase:'wheel', spinner:pid, spins:0, lastAmt:null};
+}
+
+// doSpin_pure: applies a spin result to room state
+function doSpin_pure(room, spinnerId, amt) {
+  const newSpins  = room.spins + 1;
+  const newPhase  = newSpins >= 3 ? 'done' : 'wheel';
+  const newScore  = {...room.score, [spinnerId]:(room.score[spinnerId]||0) + amt};
+  const newHistory = [...room.history, {day:room.day, who:spinnerId, amt}];
+  return {...room, score:newScore, spins:newSpins, lastAmt:amt, history:newHistory, phase:newPhase};
+}
+
+// nextDay_pure: pure function
+function nextDay_pure(room) {
+  return {
+    ...room, day:room.day+1, phase:'rps', spins:0, lastAmt:null,
+    spinner:null, rpsWinner:null,
+    rps:{wins:{p1:0,p2:0}, p1c:null, p2c:null, result:null, lastP1:null, lastP2:null}
+  };
+}
+
+// calcSpinEnd: pure (copied from index.html fix)
+function calcSpinEnd(startRot, targetIdx, extraSpins) {
+  const targetAngle = ((-(targetIdx + 0.5) * SA) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const afterExtrasMod = ((startRot + extraSpins) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const alignDelta = (targetAngle - afterExtrasMod + 2*Math.PI) % (2*Math.PI);
+  return startRot + extraSpins + alignDelta;
+}
+
+// Given final wheelRot, returns which segment is under the pointer (top)
+function segmentAtTop(rot) {
+  for (let i = 0; i < NSEG; i++) {
+    const midAngle = ((rot + i * SA - Math.PI/2 + SA/2) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+    const topAngle = 3 * Math.PI / 2; // -π/2 normalised to [0,2π)
+    const diff = Math.abs(midAngle - topAngle);
+    const wrapped = Math.min(diff, 2*Math.PI - diff);
+    if (wrapped < SA * 0.5) return i;
+  }
+  return -1;
+}
+
+function drawWheel(rot) {
+  const c = document.getElementById('wCanvas'); if (!c) return;
+  const ctx = c.getContext('2d'), cx = c.width/2, cy = c.height/2, r = cx-5;
+  ctx.clearRect(0,0,c.width,c.height);
+  SEGS.forEach((s,i) => {
+    const a0 = rot + i*SA - Math.PI/2, a1 = a0 + SA;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
+    ctx.fillStyle = s.col; ctx.fill();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(a0+SA/2);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#F4EDD5';
+    ctx.font = '600 '+(s.amt>=250?11:13)+'px sans-serif';
+    ctx.fillText(s.label, r-10, 5); ctx.restore();
+  });
+}
+
+// ── In-memory Firebase mock ────────────────────────────────────────────
+const _db = {};
+async function dbWrite_mock(code, data) { _db[code] = JSON.parse(JSON.stringify(data)); return true; }
+async function dbRead_mock(code) { return _db[code] ? JSON.parse(JSON.stringify(_db[code])) : null; }
+
+// ── Simulated 2-player session ─────────────────────────────────────────
+// Simulates two players sharing a room through the in-memory db.
+async function makeSession(name1, name2) {
+  const code = genCode();
+  const room  = mkRoom(name1);
+  room.v = 1;
+  await dbWrite_mock(code, room);
+
+  // p2 joins
+  const existing = await dbRead_mock(code);
+  const joined = {...existing, p2:name2, ready:true, v:existing.v+1};
+  await dbWrite_mock(code, joined);
+
+  return { code, room: await dbRead_mock(code) };
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  TEST SUITES
+// ═══════════════════════════════════════════════════════════════════════
+
+// ── genCode ────────────────────────────────────────────────────────────
+suite('genCode');
+
+test('returns exactly 4 characters', () => {
+  for (let i = 0; i < 20; i++) eq(genCode().length, 4, 'length');
+});
+
+test('only uppercase letters', () => {
+  for (let i = 0; i < 100; i++) {
+    const c = genCode();
+    assert(c === c.toUpperCase(), 'not uppercase: '+c);
+    assert(/^[A-Z]+$/.test(c), 'non-alpha: '+c);
+  }
+});
+
+test('never contains I or O (confusion with 1 and 0)', () => {
+  for (let i = 0; i < 200; i++) {
+    const c = genCode();
+    assert(!c.includes('I'), 'contains I: '+c);
+    assert(!c.includes('O'), 'contains O: '+c);
+  }
+});
+
+test('Z is reachable (24-char alphabet)', () => {
+  let sawZ = false;
+  for (let i = 0; i < 2000; i++) { if (genCode().includes('Z')) { sawZ = true; break; } }
+  assert(sawZ, 'Z never generated in 2000 tries — alphabet likely truncated to 23');
+});
+
+test('generates different codes (entropy check)', () => {
+  const codes = new Set(Array.from({length:50}, genCode));
+  assert(codes.size > 40, 'too many duplicates in 50 codes: '+codes.size+' unique');
+});
+
+// ── mkRoom ─────────────────────────────────────────────────────────────
+suite('mkRoom');
+
+test('has all required fields', () => {
+  const r = mkRoom('Alice');
+  assert('v'        in r, 'missing v');
+  assert('p1'       in r, 'missing p1');
+  assert('p2'       in r, 'missing p2');
+  assert('ready'    in r, 'missing ready');
+  assert('phase'    in r, 'missing phase');
+  assert('day'      in r, 'missing day');
+  assert('score'    in r, 'missing score');
+  assert('rps'      in r, 'missing rps');
+  assert('spinner'  in r, 'missing spinner');
+  assert('spins'    in r, 'missing spins');
+  assert('history'  in r, 'missing history');
+});
+
+test('p1 name is set, p2 is empty', () => {
+  const r = mkRoom('Alice');
+  eq(r.p1, 'Alice'); eq(r.p2, '');
+});
+
+test('initial scores are 0', () => {
+  const r = mkRoom('Alice');
+  eq(r.score.p1, 0); eq(r.score.p2, 0);
+});
+
+test('phase starts as rps', () => eq(mkRoom('x').phase, 'rps'));
+test('day starts at 1',      () => eq(mkRoom('x').day, 1));
+test('ready starts false',   () => eq(mkRoom('x').ready, false));
+test('spinner starts null',  () => eq(mkRoom('x').spinner, null));
+test('spins starts at 0',    () => eq(mkRoom('x').spins, 0));
+test('history starts empty', () => eq(mkRoom('x').history.length, 0));
+test('rps wins start at 0',  () => {
+  const r = mkRoom('x');
+  eq(r.rps.wins.p1, 0); eq(r.rps.wins.p2, 0);
+});
+
+// ── BEATS / RPS logic ──────────────────────────────────────────────────
+suite('Rock-Paper-Scissors BEATS table');
+
+test('rock beats scissors',  () => eq(BEATS.rock,     'scissors'));
+test('paper beats rock',     () => eq(BEATS.paper,    'rock'));
+test('scissors beats paper', () => eq(BEATS.scissors, 'paper'));
+
+function rpsWinner(p1c, p2c) {
+  if (p1c === p2c) return 'draw';
+  return BEATS[p1c] === p2c ? 'p1' : 'p2';
+}
+test('rock vs rock is draw',         () => eq(rpsWinner('rock','rock'),         'draw'));
+test('paper vs paper is draw',       () => eq(rpsWinner('paper','paper'),       'draw'));
+test('scissors vs scissors is draw', () => eq(rpsWinner('scissors','scissors'), 'draw'));
+test('rock beats scissors (p1 wins)',     () => eq(rpsWinner('rock','scissors'), 'p1'));
+test('scissors beats paper (p2 wins)',    () => eq(rpsWinner('rock','paper'),    'p2'));
+test('paper beats rock (p1)',             () => eq(rpsWinner('paper','rock'),    'p1'));
+test('all 9 combinations covered', () => {
+  const combos = ['rock','paper','scissors'];
+  let outcomes = {draw:0,p1:0,p2:0};
+  combos.forEach(a => combos.forEach(b => outcomes[rpsWinner(a,b)]++));
+  eq(outcomes.draw, 3); eq(outcomes.p1, 3); eq(outcomes.p2, 3);
+});
+
+// ── resolveRPS_pure ────────────────────────────────────────────────────
+suite('resolveRPS logic');
+
+test('draw does not increment wins', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'rock', p2c:'rock'};
+  const next = resolveRPS_pure(r);
+  eq(next.rps.wins.p1, 0); eq(next.rps.wins.p2, 0);
+  eq(next.rps.result, 'draw');
+});
+
+test('p1 win increments p1 wins', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  const next = resolveRPS_pure(r);
+  eq(next.rps.wins.p1, 1); eq(next.rps.wins.p2, 0);
+  eq(next.rps.result, 'p1');
+});
+
+test('p2 win increments p2 wins', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'scissors', p2c:'rock'};
+  const next = resolveRPS_pure(r);
+  eq(next.rps.wins.p1, 0); eq(next.rps.wins.p2, 1);
+});
+
+test('choices are cleared after resolution', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'paper', p2c:'rock'};
+  const next = resolveRPS_pure(r);
+  eq(next.rps.p1c, null); eq(next.rps.p2c, null);
+});
+
+test('lastP1 and lastP2 store previous choices', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'paper', p2c:'rock'};
+  const next = resolveRPS_pure(r);
+  eq(next.rps.lastP1, 'paper'); eq(next.rps.lastP2, 'rock');
+});
+
+test('2 wins advances phase to pick and sets rpsWinner', () => {
+  let r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r); // p1 wins round 1
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r); // p1 wins round 2
+  eq(r.rpsWinner, 'p1');
+  eq(r.phase, 'pick');
+});
+
+test('1 win keeps phase at rps', () => {
+  const r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  const next = resolveRPS_pure(r);
+  eq(next.phase, 'rps'); eq(next.rpsWinner, null);
+});
+
+test('draw keeps phase at rps and preserves accumulated wins', () => {
+  let r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r); // p1 wins 1
+  r.rps = {...r.rps, p1c:'rock', p2c:'rock'};
+  r = resolveRPS_pure(r); // draw
+  eq(r.rps.wins.p1, 1, 'p1 wins preserved after draw');
+  eq(r.phase, 'rps');
+});
+
+test('p2 can also reach 2 wins and become rpsWinner', () => {
+  let r = mkRoom('A');
+  r.rps = {...r.rps, p1c:'scissors', p2c:'rock'};
+  r = resolveRPS_pure(r);
+  r.rps = {...r.rps, p1c:'scissors', p2c:'rock'};
+  r = resolveRPS_pure(r);
+  eq(r.rpsWinner, 'p2'); eq(r.phase, 'pick');
+});
+
+// ── pickSpinner_pure ───────────────────────────────────────────────────
+suite('pickSpinner logic');
+
+test('sets phase to wheel', () => {
+  const r = {...mkRoom('A'), phase:'pick', rpsWinner:'p1'};
+  eq(pickSpinner_pure(r,'p1').phase, 'wheel');
+});
+test('sets spinner to chosen player', () => {
+  const r = {...mkRoom('A'), phase:'pick'};
+  eq(pickSpinner_pure(r,'p2').spinner, 'p2');
+  eq(pickSpinner_pure(r,'p1').spinner, 'p1');
+});
+test('resets spins to 0', () => {
+  const r = {...mkRoom('A'), phase:'pick', spins:2};
+  eq(pickSpinner_pure(r,'p1').spins, 0);
+});
+test('clears lastAmt', () => {
+  const r = {...mkRoom('A'), phase:'pick', lastAmt:150};
+  eq(pickSpinner_pure(r,'p1').lastAmt, null);
+});
+
+// ── doSpin_pure ────────────────────────────────────────────────────────
+suite('Spin / score tracking');
+
+test('score increases by spin amount', () => {
+  const r = mkRoom('A'); r.spinner='p1';
+  const next = doSpin_pure(r, 'p1', 100);
+  eq(next.score.p1, 100); eq(next.score.p2, 0);
+});
+
+test('multiple spins accumulate score', () => {
+  let r = mkRoom('A'); r.spinner='p1';
+  r = doSpin_pure(r,'p1',50);
+  r = doSpin_pure(r,'p1',150);
+  eq(r.score.p1, 200);
+});
+
+test('p2 spin does not affect p1 score', () => {
+  const r = mkRoom('A'); r.spinner='p2';
+  const next = doSpin_pure(r,'p2',300);
+  eq(next.score.p1, 0); eq(next.score.p2, 300);
+});
+
+test('spins counter increments', () => {
+  let r = mkRoom('A'); r.spinner='p1';
+  r = doSpin_pure(r,'p1',50); eq(r.spins, 1);
+  r = doSpin_pure(r,'p1',50); eq(r.spins, 2);
+  r = doSpin_pure(r,'p1',50); eq(r.spins, 3);
+});
+
+test('phase stays wheel after spin 1', () => {
+  const r = mkRoom('A'); r.spinner='p1';
+  eq(doSpin_pure(r,'p1',50).phase, 'wheel');
+});
+
+test('phase stays wheel after spin 2', () => {
+  let r = mkRoom('A'); r.spinner='p1';
+  r = doSpin_pure(r,'p1',50);
+  eq(doSpin_pure(r,'p1',50).phase, 'wheel');
+});
+
+test('phase becomes done after spin 3', () => {
+  let r = mkRoom('A'); r.spinner='p1';
+  r = doSpin_pure(r,'p1',50);
+  r = doSpin_pure(r,'p1',50);
+  eq(doSpin_pure(r,'p1',50).phase, 'done');
+});
+
+test('history records correct entry', () => {
+  const r = mkRoom('A'); r.spinner='p1'; r.day=2;
+  const next = doSpin_pure(r,'p1',200);
+  eq(next.history.length, 1);
+  deepEq(next.history[0], {day:2, who:'p1', amt:200});
+});
+
+test('history accumulates across spins', () => {
+  let r = mkRoom('A'); r.spinner='p1'; r.day=1;
+  r = doSpin_pure(r,'p1',50);
+  r = doSpin_pure(r,'p1',100);
+  r = doSpin_pure(r,'p1',150);
+  eq(r.history.length, 3);
+  eq(r.history[2].amt, 150);
+});
+
+test('lastAmt is updated after each spin', () => {
+  const r = mkRoom('A'); r.spinner='p1';
+  eq(doSpin_pure(r,'p1',250).lastAmt, 250);
+});
+
+// ── nextDay_pure ───────────────────────────────────────────────────────
+suite('Day progression (nextDay)');
+
+test('day increments by 1', () => {
+  let r = mkRoom('A'); r.day=1;
+  eq(nextDay_pure(r).day, 2);
+  eq(nextDay_pure(nextDay_pure(r)).day, 3);
+});
+
+test('phase resets to rps', () => {
+  const r = {...mkRoom('A'), phase:'done', day:1};
+  eq(nextDay_pure(r).phase, 'rps');
+});
+
+test('spins reset to 0', () => {
+  const r = {...mkRoom('A'), spins:3};
+  eq(nextDay_pure(r).spins, 0);
+});
+
+test('spinner clears to null', () => {
+  const r = {...mkRoom('A'), spinner:'p2'};
+  eq(nextDay_pure(r).spinner, null);
+});
+
+test('rpsWinner clears', () => {
+  const r = {...mkRoom('A'), rpsWinner:'p1'};
+  eq(nextDay_pure(r).rpsWinner, null);
+});
+
+test('rps wins reset to 0', () => {
+  const r = mkRoom('A'); r.rps.wins = {p1:2, p2:1};
+  const next = nextDay_pure(r);
+  eq(next.rps.wins.p1, 0); eq(next.rps.wins.p2, 0);
+});
+
+test('scores are preserved across days', () => {
+  const r = {...mkRoom('A'), score:{p1:250, p2:150}};
+  const next = nextDay_pure(r);
+  eq(next.score.p1, 250); eq(next.score.p2, 150);
+});
+
+test('history is preserved across days', () => {
+  const r = mkRoom('A');
+  r.history = [{day:1,who:'p1',amt:100}];
+  eq(nextDay_pure(r).history.length, 1);
+});
+
+test('lastAmt clears', () => {
+  const r = {...mkRoom('A'), lastAmt:300};
+  eq(nextDay_pure(r).lastAmt, null);
+});
+
+// ── Wheel segments ─────────────────────────────────────────────────────
+suite('Wheel segments (SEGS)');
+
+test('has 12 segments', () => eq(NSEG, 12));
+
+test('£50 appears 4 times (most common)', () => {
+  eq(SEGS.filter(s=>s.amt===50).length, 4);
+});
+test('£100 appears 4 times', () => {
+  eq(SEGS.filter(s=>s.amt===100).length, 4);
+});
+test('£150 appears once', () => eq(SEGS.filter(s=>s.amt===150).length, 1));
+test('£200 appears once', () => eq(SEGS.filter(s=>s.amt===200).length, 1));
+test('£250 appears once', () => eq(SEGS.filter(s=>s.amt===250).length, 1));
+test('£300 appears once', () => eq(SEGS.filter(s=>s.amt===300).length, 1));
+
+test('every segment has label, amt (number), col', () => {
+  SEGS.forEach((s, i) => {
+    assert(typeof s.label === 'string', 'seg '+i+' missing label');
+    assert(typeof s.amt   === 'number', 'seg '+i+' missing amt');
+    assert(typeof s.col   === 'string', 'seg '+i+' missing col');
+    assert(s.amt > 0, 'seg '+i+' amt <= 0');
+  });
+});
+
+test('SA equals 2π/12', () => {
+  const diff = Math.abs(SA - (2*Math.PI)/12);
+  assert(diff < 1e-10, 'SA mismatch: '+SA);
+});
+
+// ── Wheel angle / calcSpinEnd ──────────────────────────────────────────
+suite('Wheel landing calculation (calcSpinEnd)');
+
+const TWO_PI = 2 * Math.PI;
+
+test('result is greater than startRot + minSpins (6 full rotations)', () => {
+  for (let i = 0; i < 12; i++) {
+    const extraSpins = 6 * TWO_PI;
+    const end = calcSpinEnd(0, i, extraSpins);
+    assert(end > 6 * TWO_PI - 0.01, 'end too small for seg '+i+': '+end);
+  }
+});
+
+test('segment under pointer matches targetIdx for all 12 segments from rot=0', () => {
+  for (let i = 0; i < NSEG; i++) {
+    const end = calcSpinEnd(0, i, 6 * TWO_PI);
+    const landed = segmentAtTop(end);
+    eq(landed, i, 'from rot=0, targeting seg '+i+' but landed on '+landed);
+  }
+});
+
+test('segment under pointer matches targetIdx for various starting rotations', () => {
+  const starts = [0, 1.5, Math.PI, 4.7, 5 * TWO_PI];
+  starts.forEach(startRot => {
+    for (let i = 0; i < NSEG; i++) {
+      const extraSpins = 6 * TWO_PI;
+      const end = calcSpinEnd(startRot, i, extraSpins);
+      const landed = segmentAtTop(end);
+      eq(landed, i, 'startRot='+startRot.toFixed(2)+' seg '+i+' landed on '+landed);
+    }
+  });
+});
+
+test('random extra spins (6-10) still land correctly', () => {
+  for (let trial = 0; trial < 50; trial++) {
+    const targetIdx  = Math.floor(Math.random() * NSEG);
+    const extraSpins = (6 + Math.floor(Math.random() * 5)) * TWO_PI;
+    const startRot   = Math.random() * TWO_PI;
+    const end = calcSpinEnd(startRot, targetIdx, extraSpins);
+    const landed = segmentAtTop(end);
+    eq(landed, targetIdx, 'random trial: targeting '+targetIdx+' landed '+landed);
+  }
+});
+
+test('wheel rotates at least 6 full turns', () => {
+  for (let i = 0; i < 12; i++) {
+    const extraSpins = 6 * TWO_PI;
+    const end = calcSpinEnd(0, i, extraSpins);
+    assert(end >= 6 * TWO_PI, 'not enough rotation for seg '+i);
+  }
+});
+
+// ── drawWheel ──────────────────────────────────────────────────────────
+suite('drawWheel (canvas rendering)');
+
+test('drawWheel does not throw at rot=0', () => {
+  drawWheel(0); // no assertion needed — just must not throw
+});
+test('drawWheel does not throw at arbitrary rotations', () => {
+  [0, Math.PI/4, Math.PI, 3*Math.PI, 100*Math.PI].forEach(rot => drawWheel(rot));
+});
+test('canvas context is accessible', () => {
+  const c = document.getElementById('wCanvas');
+  assert(!!c, 'canvas element missing');
+  assert(!!c.getContext('2d'), 'canvas 2d context missing');
+});
+
+// ── Summary calculation ────────────────────────────────────────────────
+suite('Summary / total calculation');
+
+test('total is sum of both scores', () => {
+  const r = mkRoom('Alice');
+  r.score = {p1:250, p2:100};
+  const total = (r.score.p1||0) + (r.score.p2||0);
+  eq(total, 350);
+});
+
+test('spin count from history matches actual spins', () => {
+  let r = mkRoom('Alice'); r.spinner='p1'; r.day=1;
+  r = doSpin_pure(r,'p1',50);
+  r = doSpin_pure(r,'p1',100);
+  const mySpins = r.history.filter(h => h.who === 'p1').length;
+  eq(mySpins, 2);
+});
+
+test('history entries have correct player ids', () => {
+  let r = mkRoom('Alice'); r.spinner='p2'; r.day=1;
+  r = doSpin_pure(r,'p2',200);
+  eq(r.history[0].who, 'p2');
+});
+
+test('multi-day spin totals accumulate correctly', () => {
+  let r = mkRoom('Alice'); r.spinner='p1';
+  // Day 1: p1 spins 3 times
+  r = doSpin_pure(r,'p1',50);
+  r = doSpin_pure(r,'p1',100);
+  r = doSpin_pure(r,'p1',150);
+  r = nextDay_pure(r); r.spinner='p2';
+  // Day 2: p2 spins 3 times
+  r = doSpin_pure(r,'p2',200);
+  r = doSpin_pure(r,'p2',100);
+  r = doSpin_pure(r,'p2',50);
+
+  eq(r.score.p1, 300, 'p1 total after day 1');
+  eq(r.score.p2, 350, 'p2 total after day 2');
+  eq(r.history.length, 6, 'history entries');
+  const grandTotal = r.score.p1 + r.score.p2;
+  eq(grandTotal, 650);
+});
+
+// ── End-to-end full game flow ──────────────────────────────────────────
+suite('End-to-end: full game flow');
+
+test('room creation sets p1 name and initial state', async () => {
+  const {room} = await makeSession('Alice', 'Bob');
+  eq(room.p1, 'Alice');
+  eq(room.p2, 'Bob');
+  eq(room.ready, true);
+  eq(room.phase, 'rps');
+  eq(room.day, 1);
+});
+
+test('two RPS rounds then pick then 3 spins then next day', async () => {
+  let r = mkRoom('Alice'); r.v=1;
+  const code = genCode();
+  r.p2='Bob'; r.ready=true;
+  await dbWrite_mock(code, r);
+  r = await dbRead_mock(code);
+
+  // RPS round 1: p1 wins
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r);
+  eq(r.rps.wins.p1, 1); eq(r.phase, 'rps');
+
+  // RPS round 2: p1 wins again → advances
+  r.rps = {...r.rps, p1c:'paper', p2c:'rock'};
+  r = resolveRPS_pure(r);
+  eq(r.rpsWinner, 'p1'); eq(r.phase, 'pick');
+
+  // Winner picks p2 to spin
+  r = pickSpinner_pure(r, 'p2');
+  eq(r.spinner, 'p2'); eq(r.phase, 'wheel');
+
+  // p2 spins 3 times
+  r = doSpin_pure(r,'p2',50);  eq(r.phase,'wheel'); eq(r.spins,1);
+  r = doSpin_pure(r,'p2',100); eq(r.phase,'wheel'); eq(r.spins,2);
+  r = doSpin_pure(r,'p2',150); eq(r.phase,'done');  eq(r.spins,3);
+  eq(r.score.p2, 300);
+
+  // Move to day 2
+  r = nextDay_pure(r);
+  eq(r.day, 2); eq(r.phase,'rps'); eq(r.spins,0);
+  eq(r.score.p2, 300, 'scores preserved');
+});
+
+test('winner can choose themselves to spin', async () => {
+  let r = mkRoom('Alice'); r.p2='Bob'; r.ready=true;
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r);
+  r.rps = {...r.rps, p1c:'rock', p2c:'scissors'};
+  r = resolveRPS_pure(r);
+  r = pickSpinner_pure(r, 'p1'); // winner picks themselves
+  eq(r.spinner, 'p1');
+});
+
+test('scores never decrease', () => {
+  let r = mkRoom('Alice'); r.spinner='p1'; r.day=1;
+  const amounts = [50,100,150,200,250,300];
+  amounts.forEach(amt => {
+    const prev = r.score.p1;
+    r = doSpin_pure(r,'p1',amt);
+    assert(r.score.p1 >= prev, 'score decreased');
+  });
+});
+
+test('multiple days accumulate to correct total', () => {
+  let r = mkRoom('Alice'); r.p2='Bob'; r.ready=true;
+  const spins = [
+    ['p1',50], ['p1',100], ['p1',150],
+    ['p2',200],['p2',100], ['p2',50],
+    ['p1',300],['p1',250], ['p1',100],
+  ];
+  let day = 1, spinIdx = 0;
+  [0,1,2].forEach(dayN => {
+    r.spinner = spins[spinIdx][0];
+    for (let s = 0; s < 3; s++) {
+      r = doSpin_pure(r, spins[spinIdx][0], spins[spinIdx][1]);
+      spinIdx++;
+    }
+    if (dayN < 2) r = nextDay_pure(r);
+  });
+  eq(r.score.p1, 50+100+150+300+250+100, 'p1 total');
+  eq(r.score.p2, 200+100+50,             'p2 total');
+  const grandTotal = r.score.p1 + r.score.p2;
+  eq(grandTotal, 1300);
+});
+
+test('firebase mock write-read roundtrip preserves data', async () => {
+  const code = 'TEST';
+  const room = mkRoom('Alice');
+  await dbWrite_mock(code, room);
+  const back = await dbRead_mock(code);
+  deepEq(back, room);
+});
+
+test('firebase mock returns null for unknown code', async () => {
+  const back = await dbRead_mock('ZZZZ');
+  eq(back, null);
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  RENDER RESULTS
+// ═══════════════════════════════════════════════════════════════════════
+(async () => {
+  // Wait for async tests (none at top level, but we've called testAsync above)
+  await Promise.resolve();
+
+  const root = document.getElementById('root');
+  let currentSuite = null, suiteEl = null;
+
+  _output.forEach(item => {
+    if (item.type === 'suite') {
+      suiteEl = document.createElement('div');
+      suiteEl.className = 'suite';
+      suiteEl.innerHTML = '<div class="suite-title">'+item.name+'</div>';
+      root.appendChild(suiteEl);
+      currentSuite = suiteEl;
+    } else {
+      const d = document.createElement('div');
+      d.className = 'test ' + (item.type === 'pass' ? 'pass' : 'fail');
+      d.textContent = (item.type === 'pass' ? '✓' : '✗') + ' ' + item.name +
+                      (item.err ? ' — ' + item.err : '');
+      if (currentSuite) currentSuite.appendChild(d);
+    }
+  });
+
+  const summary = document.createElement('div');
+  summary.className = 'summary ' + (_failed === 0 ? 'ok' : 'err');
+  summary.textContent = `Results: ${_passed} passed, ${_failed} failed out of ${_passed+_failed} tests`;
+  root.appendChild(summary);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Giving Pot ✈</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{min-height:100%;font-family:'Outfit',sans-serif;background:#08030F;color:#F4EDD5;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(ellipse 80% 55% at 15% 5%,rgba(28,10,58,.85) 0%,transparent 55%),
+             radial-gradient(ellipse 60% 45% at 88% 95%,rgba(10,100,90,.2) 0%,transparent 55%),#08030F}
+.serif{font-family:'Cormorant Garamond',serif}
+.gt{font-family:'Cormorant Garamond',serif;font-weight:700;
+  background:linear-gradient(140deg,#EEC85A 0%,#C99828 55%,#7A5010 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ey{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:6px}
+.screen{display:none;min-height:100dvh;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
+.screen.active{display:flex}
+.col{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px}
+.row{display:flex;gap:10px}
+.card{background:rgba(255,255,255,.055);border:1px solid rgba(212,168,67,.22);border-radius:18px;padding:22px 18px;width:100%;max-width:400px}
+input[type=text]{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.22);border-radius:10px;
+  padding:12px 15px;color:#F4EDD5;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s}
+input[type=text]:focus{border-color:#D4A843}
+input[type=text]::placeholder{color:rgba(244,237,213,.3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 22px;border-radius:50px;
+  border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;
+  transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn-gold{background:linear-gradient(135deg,#EEC85A,#C89820);color:#08030F;font-weight:600;box-shadow:0 4px 18px rgba(212,168,67,.35)}
+.btn-teal{background:linear-gradient(135deg,#12B094,#0A7A68);color:#fff;box-shadow:0 4px 18px rgba(18,176,148,.3)}
+.btn-ghost{background:transparent;border:1px solid rgba(212,168,67,.32);color:#D4A843}
+.btn-full{width:100%}
+.or-div{display:flex;align-items:center;gap:12px;color:rgba(244,237,213,.3);font-size:11px}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(212,168,67,.15)}
+.badges{display:flex;gap:9px;width:100%;max-width:400px}
+.badge{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.14);border-radius:12px;padding:10px 13px;text-align:center}
+.badge.me{background:rgba(212,168,67,.07);border-color:rgba(212,168,67,.4)}
+.badge-name{font-size:11px;font-weight:500;margin-bottom:2px}
+.badge-score{font-family:'Cormorant Garamond',serif;font-size:22px;color:#EEC85A}
+.room-code{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(48px,14vw,72px);
+  letter-spacing:10px;background:linear-gradient(135deg,#EEC85A,#C89820);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;text-align:center}
+.copy-link{background:rgba(255,255,255,.04);border:1px dashed rgba(212,168,67,.3);border-radius:10px;
+  padding:11px 14px;font-size:12px;color:rgba(244,237,213,.45);cursor:pointer;text-align:center;
+  word-break:break-all;transition:background .2s;line-height:1.6}
+.copy-link:hover{background:rgba(212,168,67,.08)}
+.pw{display:flex;align-items:center;gap:9px;justify-content:center;font-size:13px;color:rgba(244,237,213,.45)}
+.pdot{width:8px;height:8px;border-radius:50%;background:#12B094;animation:blink 1.3s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:.25;transform:scale(.75)}50%{opacity:1;transform:scale(1.15)}}
+.rps-grid{display:grid;grid-template-columns:1fr 28px 1fr;gap:8px;align-items:center;width:100%;max-width:400px}
+.rps-zone{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.14);border-radius:14px;
+  padding:16px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:7px;min-height:118px}
+.rps-zone.me{background:rgba(212,168,67,.06);border-color:rgba(212,168,67,.4)}
+.rzn{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#D4A843}
+.rze{font-size:42px;min-height:50px;display:flex;align-items:center;justify-content:center}
+.rzs{font-family:'Cormorant Garamond',serif;font-size:26px;color:#EEC85A}
+.rps-vs{font-family:'Cormorant Garamond',serif;font-size:17px;color:rgba(244,237,213,.28);text-align:center}
+.rps-choices{display:flex;gap:9px;width:100%;max-width:400px}
+.rps-btn{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(212,168,67,.18);border-radius:13px;
+  padding:14px 6px;cursor:pointer;font-size:26px;display:flex;flex-direction:column;
+  align-items:center;gap:4px;color:#F4EDD5;transition:all .15s}
+.rps-btn:hover{background:rgba(212,168,67,.15);border-color:#D4A843;transform:scale(1.05)}
+.rps-btn.chosen{border-color:#D4A843;background:rgba(212,168,67,.2)}
+.rps-btn:disabled{opacity:.4;pointer-events:none}
+.rps-btn span{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#D4A843;font-family:'Outfit',sans-serif}
+.sbar{width:100%;max-width:400px;border-radius:10px;padding:11px 14px;text-align:center;
+  font-size:13px;border:1px solid rgba(212,168,67,.15);background:rgba(255,255,255,.04);
+  color:rgba(244,237,213,.45);min-height:44px;display:flex;align-items:center;justify-content:center}
+.sbar.win{background:rgba(18,176,148,.1);border-color:rgba(18,176,148,.28);color:#4ECDC4}
+.sbar.lose{background:rgba(192,40,40,.1);border-color:rgba(192,40,40,.25);color:#e56b74}
+.sbar.draw{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.28);color:#D4A843}
+.wheel-wrap{position:relative;width:min(280px,82vw);height:min(280px,82vw)}
+.wptr{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:11px solid transparent;border-right:11px solid transparent;border-top:21px solid #D4A843;
+  filter:drop-shadow(0 3px 8px rgba(212,168,67,.75));z-index:5}
+#wCanvas{width:100%;height:100%;border-radius:50%;
+  box-shadow:0 0 0 5px rgba(212,168,67,.28),0 16px 50px rgba(0,0,0,.6)}
+.pips{display:flex;gap:7px;justify-content:center;margin-top:8px}
+.pip{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .3s}
+.pip.done{background:#0A7A68}
+.pip.now{background:#D4A843;box-shadow:0 0 8px #D4A843}
+.spin-result{background:linear-gradient(135deg,#100626,#081018);border:2px solid #D4A843;
+  border-radius:17px;padding:20px 26px;text-align:center;
+  box-shadow:0 0 44px rgba(212,168,67,.2);max-width:260px;width:100%;
+  animation:popin .4s cubic-bezier(.34,1.56,.64,1)}
+.rl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,237,213,.4);margin-bottom:3px}
+.ra{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.rp{font-size:14px;color:#F4EDD5;margin-top:3px}
+.rt{font-size:11px;color:rgba(244,237,213,.38);margin-top:5px}
+.sum-row{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.055);
+  border:1px solid rgba(212,168,67,.2);border-radius:14px;padding:14px 17px;
+  width:100%;max-width:400px;animation:slideup .35s ease both}
+.srank{font-family:'Cormorant Garamond',serif;font-size:24px;color:rgba(244,237,213,.2);width:22px}
+.sinfo{flex:1}
+.sname{font-size:14px}
+.sdet{font-size:11px;color:rgba(244,237,213,.38);margin-top:2px}
+.samt{font-family:'Cormorant Garamond',serif;font-size:24px;color:#EEC85A}
+.tbox{width:100%;max-width:400px;background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.26);
+  border-radius:14px;padding:18px;text-align:center}
+.tlbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#D4A843;margin-bottom:3px}
+.tamt{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.hrow{display:flex;gap:12px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:13px;color:rgba(244,237,213,.52)}
+.hday{color:#D4A843;min-width:46px;font-weight:500}
+.hamt{margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:15px;color:#EEC85A}
+.pick-card{width:100%;max-width:400px;text-align:center;background:rgba(255,255,255,.055);
+  border:1px solid rgba(212,168,67,.2);border-radius:16px;padding:20px 18px}
+.obs{font-size:12px;color:rgba(244,237,213,.38);text-align:center;padding:9px 14px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(212,168,67,.1);border-radius:8px;
+  max-width:400px;width:100%}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:rgba(8,3,15,.96);border:1px solid rgba(212,168,67,.25);border-radius:50px;
+  padding:9px 20px;font-size:13px;color:#F4EDD5;pointer-events:none;white-space:nowrap;
+  opacity:0;transition:opacity .25s;z-index:9998}
+#toast.show{opacity:1}
+.cf{position:fixed;border-radius:2px;pointer-events:none;z-index:9999;animation:cfall linear forwards}
+@keyframes cfall{from{transform:translateY(-8px) rotate(0);opacity:1}to{transform:translateY(110vh) rotate(540deg);opacity:0}}
+@keyframes popin{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes slideup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="col" style="align-items:center;gap:20px">
+    <div style="text-align:center">
+      <div class="ey">✈ Generous Travellers</div>
+      <div class="gt" style="font-size:clamp(38px,10vw,58px);line-height:1.05">The<br>Giving Pot</div>
+      <div style="font-size:13px;color:rgba(244,237,213,.48);line-height:1.7;max-width:280px;margin:8px auto 0">
+        Spin the wheel to fairly decide how much each generous soul chips in.
+      </div>
+    </div>
+    <div class="card col" style="gap:11px">
+      <input type="text" id="inp-name" placeholder="Your name" maxlength="18" autocomplete="off">
+      <button class="btn btn-gold btn-full" id="btn-create" onclick="createRoom()">Create a Game Room →</button>
+      <div class="or-div">or join existing room</div>
+      <input type="text" id="inp-code" placeholder="ROOM CODE" maxlength="4"
+        style="letter-spacing:6px;text-align:center;text-transform:uppercase" autocomplete="off"
+        oninput="this.value=this.value.toUpperCase()">
+      <button class="btn btn-teal btn-full" id="btn-join" onclick="joinRoom()">Join Room →</button>
+    </div>
+    <div style="font-size:11px;color:rgba(244,237,213,.2);text-align:center;max-width:300px;line-height:1.6">
+      Both players open this page on their own phone.<br>One creates a room, one joins with the code.
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="s-lobby" class="screen">
+  <div class="col" style="align-items:center;gap:20px">
+    <div style="text-align:center">
+      <div class="ey">Your room code</div>
+      <div class="room-code" id="lob-code">----</div>
+      <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this code with your companion</div>
+    </div>
+    <div class="card col" style="gap:13px;text-align:center">
+      <div class="copy-link" id="lob-link" onclick="copyLink()">📋 Tap to copy invite link</div>
+      <div style="height:1px;background:rgba(212,168,67,.1)"></div>
+      <div class="pw"><div class="pdot"></div>Waiting for companion to join…</div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="s-game" class="screen">
+  <div class="col" style="align-items:center;gap:12px">
+    <div class="badges">
+      <div class="badge me"><div class="badge-name" id="bme-n">You</div><div class="badge-score" id="bme-s">£0</div></div>
+      <div class="badge"><div class="badge-name" id="bopp-n">Opponent</div><div class="badge-score" id="bopp-s">£0</div></div>
+    </div>
+    <div style="text-align:center"><div class="ey" id="day-lbl">Day 1</div></div>
+
+    <!-- RPS -->
+    <div id="sec-rps" class="col" style="align-items:center;gap:12px">
+      <div class="gt" style="font-size:clamp(24px,6vw,38px);line-height:1.1;text-align:center">Rock · Paper<br>Scissors</div>
+      <div class="rps-grid">
+        <div class="rps-zone me">
+          <div class="rzn" id="rz-mn">Me</div>
+          <div class="rze" id="rz-me">🤜</div>
+          <div class="rzs" id="rz-mw">0</div>
+        </div>
+        <div class="rps-vs">vs</div>
+        <div class="rps-zone">
+          <div class="rzn" id="rz-on">Opp</div>
+          <div class="rze" id="rz-oe">🤛</div>
+          <div class="rzs" id="rz-ow">0</div>
+        </div>
+      </div>
+      <div class="sbar" id="rps-bar">Choose your move!</div>
+      <div class="rps-choices">
+        <button class="rps-btn" onclick="castRPS('rock')">🪨<span>Rock</span></button>
+        <button class="rps-btn" onclick="castRPS('paper')">📄<span>Paper</span></button>
+        <button class="rps-btn" onclick="castRPS('scissors')">✂️<span>Scissors</span></button>
+      </div>
+    </div>
+
+    <!-- PICK -->
+    <div id="sec-pick" class="pick-card hidden">
+      <div class="serif" style="font-size:22px;margin-bottom:5px" id="pick-ttl"></div>
+      <div style="font-size:12px;color:rgba(244,237,213,.4);margin-bottom:14px" id="pick-sub"></div>
+      <div class="row" id="pick-btns" style="justify-content:center;gap:10px"></div>
+    </div>
+
+    <!-- WHEEL -->
+    <div id="sec-whl" class="col hidden" style="align-items:center;gap:12px">
+      <div style="text-align:center">
+        <div class="serif" style="font-size:clamp(18px,4vw,26px);color:#EEC85A;font-weight:600" id="whl-who">Spinning…</div>
+        <div class="pips">
+          <div class="pip now" id="pip0"></div>
+          <div class="pip" id="pip1"></div>
+          <div class="pip" id="pip2"></div>
+        </div>
+      </div>
+      <div class="wheel-wrap">
+        <div class="wptr"></div>
+        <canvas id="wCanvas" width="280" height="280"></canvas>
+      </div>
+      <div id="res-wrap" class="hidden">
+        <div class="spin-result">
+          <div class="rl">Contribution</div>
+          <div class="ra" id="res-amt">£100</div>
+          <div class="rp" id="res-plr">Player</div>
+          <div class="rt" id="res-tot"></div>
+        </div>
+      </div>
+      <div class="obs hidden" id="obs-note"></div>
+      <div class="row" style="justify-content:center;flex-wrap:wrap;gap:9px">
+        <button class="btn btn-teal hidden" id="btn-spin" onclick="doSpin()">Spin the Wheel ✨</button>
+        <button class="btn btn-teal hidden" id="btn-next" onclick="nextDay()">Next Day →</button>
+        <button class="btn btn-ghost" onclick="showSummary()">View Summary</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div id="s-summary" class="screen">
+  <div class="col" style="align-items:center;gap:12px;padding-top:16px;padding-bottom:28px">
+    <div style="text-align:center">
+      <div class="ey">✈ Travel Fund</div>
+      <div class="gt" style="font-size:44px;line-height:1.05">The Pot</div>
+    </div>
+    <div id="sum-rows" class="col" style="gap:10px"></div>
+    <div class="tbox"><div class="tlbl">Total Trip Fund</div><div class="tamt" id="sum-total">£0</div></div>
+    <div id="sum-hist" class="col" style="gap:0;width:100%;max-width:400px"></div>
+    <div class="row" style="justify-content:center;flex-wrap:wrap;gap:9px;margin-top:8px">
+      <button class="btn btn-teal" onclick="backToGame()">Back to Game</button>
+      <button class="btn btn-ghost" onclick="newGame()">New Game</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  THE GIVING POT v3  —  Real-time sync via Firebase REST (no SDK)
+//  Fallback: localStorage (same device / offline)
+// ══════════════════════════════════════════════════════════════════════
+
+// ── Firebase REST ─────────────────────────────────────────────────────
+// Uses Firebase Realtime Database via plain fetch() — no imports needed.
+// This database is open in test mode (valid until Netlify-hosted version
+// is stable, then swap with your own — see instructions in README below).
+//
+// HOW TO GET YOUR OWN FREE FIREBASE (takes ~3 minutes):
+//   1. Go to https://console.firebase.google.com
+//   2. Click "Add project" → name it anything → Continue → Create
+//   3. Left menu: Build → Realtime Database → Create database
+//      → Choose a region → "Start in test mode" → Enable
+//   4. Copy the database URL shown (ends in .firebasedatabase.app)
+//   5. Paste it as the value of FIREBASE_URL below
+//   6. Re-upload index.html to Netlify (just drag the file again)
+
+const FIREBASE_URL = "https://generouspot-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+async function dbWrite(code, data) {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json`, {
+      method:"PUT", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error("status "+r.status);
+    return true;
+  } catch(e) {
+    try { localStorage.setItem("gp_"+code, JSON.stringify(data)); } catch(_){}
+    console.warn("Firebase unavailable, using localStorage:", e.message);
+    return false;
+  }
+}
+
+async function dbRead(code) {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json`);
+    if (!r.ok) throw new Error("status "+r.status);
+    let d; try { d = await r.json(); } catch(_){ d = null; }
+    return (d && typeof d === "object") ? d : null;
+  } catch(e) {
+    try {
+      const s = localStorage.getItem("gp_"+code);
+      return s ? JSON.parse(s) : null;
+    } catch(_){ return null; }
+  }
+}
+
+let _poll = null;
+let _pausePoll = false; // pause poll during spin to avoid race condition
+function startPolling(code) {
+  stopPolling();
+  _poll = setInterval(async () => {
+    if (_pausePoll) return; // skip during spin
+    try {
+      const data = await dbRead(code);
+      if (data && typeof data.v === "number" && data.v > G.lastV) {
+        G.lastV = data.v;
+        G.room  = data;
+        onRemoteUpdate(data);
+      }
+    } catch(e) {}
+  }, 1500);
+}
+function stopPolling() {
+  if (_poll) { clearInterval(_poll); _poll = null; }
+}
+
+// ── Wheel ─────────────────────────────────────────────────────────────
+const SEGS=[
+  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£100",amt:100,col:"#0D9678"},
+  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£150",amt:150,col:"#2A1250"},
+  {label:"£100", amt:100, col:"#0D9678"},{label:"£200",amt:200,col:"#9A6E10"},
+  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£100",amt:100,col:"#0D9678"},
+  {label:"£250", amt:250, col:"#682878"},{label:"£50", amt:50, col:"#0A6868"},
+  {label:"£100", amt:100, col:"#0D9678"},{label:"£300",amt:300,col:"#8C2424"},
+];
+const NSEG=SEGS.length, SA=(2*Math.PI)/NSEG;
+let wheelRot=0, isSpinning=false;
+
+function drawWheel(rot) {
+  const c=document.getElementById("wCanvas"); if(!c) return;
+  const ctx=c.getContext("2d"), cx=c.width/2, cy=c.height/2, r=cx-5;
+  ctx.clearRect(0,0,c.width,c.height);
+  SEGS.forEach((s,i)=>{
+    const a0=rot+i*SA-Math.PI/2, a1=a0+SA;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
+    ctx.fillStyle=s.col; ctx.fill();
+    ctx.strokeStyle="rgba(8,3,18,.85)"; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(a0+SA/2);
+    ctx.textAlign="right"; ctx.fillStyle="#F4EDD5";
+    ctx.font="600 "+(s.amt>=250?11:13)+"px sans-serif";
+    ctx.shadowColor="rgba(0,0,0,.8)"; ctx.shadowBlur=3;
+    ctx.fillText(s.label,r-10,5); ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,20,0,2*Math.PI);
+  ctx.fillStyle="#080312"; ctx.fill();
+  ctx.strokeStyle="#D4A843"; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.fillStyle="#D4A843"; ctx.font="13px serif";
+  ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("✈",cx,cy);
+}
+
+function calcSpinEnd(startRot, targetIdx, extraSpins) {
+  // For segment i to land under the pointer (top of wheel, angle = -π/2):
+  //   rot + i*SA - π/2 + SA/2 = -π/2  →  rot = -(i+0.5)*SA  (mod 2π)
+  const targetAngle = ((-(targetIdx + 0.5) * SA) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const afterExtrasMod = ((startRot + extraSpins) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const alignDelta = (targetAngle - afterExtrasMod + 2*Math.PI) % (2*Math.PI);
+  return startRot + extraSpins + alignDelta;
+}
+
+function animateSpin(onDone) {
+  if (isSpinning) return;
+  isSpinning = true;
+  const targetIdx = Math.floor(Math.random() * NSEG);
+  const seg = SEGS[targetIdx];
+  const extraSpins = (6 + Math.floor(Math.random() * 5)) * 2 * Math.PI;
+  const end = calcSpinEnd(wheelRot, targetIdx, extraSpins);
+  const dur = 4200 + Math.random() * 1000;
+  const startRot = wheelRot;
+  const startTime = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 4);
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / dur, 1);
+    wheelRot = startRot + (end - startRot) * ease(progress);
+    drawWheel(wheelRot);
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      wheelRot = end;
+      isSpinning = false;
+      drawWheel(wheelRot);
+      setTimeout(() => onDone(seg), 300);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// ── State ─────────────────────────────────────────────────────────────
+const BEATS={rock:"scissors",paper:"rock",scissors:"paper"};
+const EMOJ={rock:"🪨",paper:"📄",scissors:"✂️"};
+
+function genCode(){
+  return Array.from({length:4},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(Math.random()*24)]).join("");
+}
+function mkRoom(p1){
+  return{v:1,p1,p2:"",ready:false,phase:"rps",day:1,
+    score:{p1:0,p2:0},
+    rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null},
+    spinner:null,spins:0,lastAmt:null,rpsWinner:null,history:[]};
+}
+let G={myId:"",myName:"",code:"",room:null,lastV:0};
+
+function roomUpdate(fn){
+  const next=fn(G.room);
+  next.v=(G.room?.v||0)+1;
+  G.lastV=next.v; G.room=next;
+  dbWrite(G.code,next);
+  renderGame();
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function toast(msg,dur=3500){
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),dur);
+}
+
+// ── Actions ───────────────────────────────────────────────────────────
+async function createRoom(){
+  const name=document.getElementById("inp-name").value.trim();
+  if(!name){toast("✏️ Enter your name first");return;}
+  const btn=document.getElementById("btn-create");
+  btn.disabled=true; btn.textContent="Creating…";
+  try{
+    const code=genCode(), room=mkRoom(name);
+    const ok=await dbWrite(code,room);
+    G.myId="p1"; G.myName=name; G.code=code; G.room=room; G.lastV=1;
+    document.getElementById("lob-code").textContent=code;
+    const link=location.origin+location.pathname+"?room="+code;
+    document.getElementById("lob-link").textContent="📋 "+link;
+    show("s-lobby");
+    if(!ok) toast("⚠️ No internet sync — share the code manually. Works on this device only.");
+    startPolling(code);
+  }catch(e){
+    toast("❌ Error creating room. Please try again.");
+    console.error("createRoom:",e);
+  }finally{
+    btn.disabled=false; btn.textContent="Create a Game Room →";
+  }
+}
+
+async function joinRoom(){
+  const name=document.getElementById("inp-name").value.trim();
+  const code=document.getElementById("inp-code").value.trim().toUpperCase();
+  if(!name){toast("✏️ Enter your name");return;}
+  if(code.length!==4){toast("Enter the 4-letter room code");return;}
+  const btn=document.getElementById("btn-join");
+  btn.disabled=true; btn.textContent="Joining…";
+  try{
+    const existing=await dbRead(code);
+    if(!existing){toast("❌ Room '"+code+"' not found — check the code");return;}
+    const updated={...existing,p2:name,ready:true,v:existing.v+1};
+    await dbWrite(code,updated);
+    G.myId="p2"; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
+    startPolling(code);
+    show("s-game"); renderGame();
+  }catch(e){
+    toast("❌ Could not join — check code and connection");
+    console.error("joinRoom:",e);
+  }finally{
+    btn.disabled=false; btn.textContent="Join Room →";
+  }
+}
+
+function copyLink(){
+  const link=location.origin+location.pathname+"?room="+G.code;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).then(()=>toast("✅ Link copied! Send to your companion ✈"));
+  } else {
+    prompt("Copy this link:",link);
+  }
+}
+
+// ── Remote sync ───────────────────────────────────────────────────────
+function onRemoteUpdate(data){
+  const cur=document.querySelector(".screen.active")?.id;
+  if(cur==="s-lobby"&&data.ready&&data.p2){show("s-game");renderGame();return;}
+  // p2's choice came in — if p1c is already set, resolve (only p1 resolves)
+  if(data.phase==="rps"&&data.rps.p1c&&data.rps.p2c&&G.myId==="p1"){
+    resolveRPS(data); return;
+  }
+  renderGame();
+}
+
+// ── RPS ───────────────────────────────────────────────────────────────
+function castRPS(choice){
+  const r=G.room; if(!r) return;
+  const f=G.myId==="p1"?"p1c":"p2c";
+  if(r.rps[f]) return;
+  // Build updated rps with my choice
+  const updatedRps={...r.rps,[f]:choice};
+  if(G.myId==="p1" && updatedRps.p1c && updatedRps.p2c){
+    // Both choices in and I am p1 — resolve immediately without waiting for poll
+    resolveRPS({...r,rps:updatedRps});
+  } else {
+    roomUpdate(p=>({...p,rps:{...p.rps,[f]:choice}}));
+  }
+}
+
+function resolveRPS(room){
+  const{p1c,p2c}=room.rps;
+  let res; if(p1c===p2c) res="draw"; else if(BEATS[p1c]===p2c) res="p1"; else res="p2";
+  const wins={p1:(room.rps.wins.p1||0), p2:(room.rps.wins.p2||0)};
+  if(res!=="draw") wins[res]++;
+  const winner=wins.p1>=2?"p1":wins.p2>=2?"p2":null;
+  roomUpdate(p=>({...p,rpsWinner:winner,phase:winner?"pick":"rps",
+    rps:{wins,p1c:null,p2c:null,result:res,lastP1:p1c,lastP2:p2c}}));
+}
+
+function pickSpinner(pid){
+  roomUpdate(p=>({...p,phase:"wheel",spinner:pid,spins:0,lastAmt:null}));
+}
+
+// ── Spin ──────────────────────────────────────────────────────────────
+let spinLock = false;
+function doSpin(){
+  const r=G.room;
+  if(!r || r.spinner!==G.myId || r.spins>=3 || isSpinning || spinLock) return;
+  spinLock = true;
+  _pausePoll = true; // freeze poll so remote stale data doesn't overwrite result
+  document.getElementById("btn-spin").disabled=true;
+  const spinsAtStart = r.spins; // capture before any async changes
+  animateSpin(seg=>{
+    if(!seg || typeof seg.amt !== "number"){
+      console.error("Bad segment", seg);
+      spinLock = false; _pausePoll = false;
+      document.getElementById("btn-spin").disabled=false;
+      return;
+    }
+    spawnConfetti();
+    const newSpins = spinsAtStart + 1;
+    const newPhase = newSpins >= 3 ? "done" : "wheel";
+    // Build the new state directly — don't rely on G.room which may have been polled
+    const base = G.room || r;
+    const newScore = {...base.score, [G.myId]:(base.score[G.myId]||0)+seg.amt};
+    const newHistory = [...base.history, {day:base.day, who:G.myId, amt:seg.amt}];
+    const newRoom = {...base, score:newScore, spins:newSpins, lastAmt:seg.amt,
+                    history:newHistory, phase:newPhase, v:(base.v||0)+1};
+    G.lastV = newRoom.v;
+    G.room  = newRoom;
+    dbWrite(G.code, newRoom);
+    renderGame(); // render with confirmed state
+    spinLock = false;
+    // Resume poll after a delay (give Firebase time to confirm write)
+    setTimeout(() => { _pausePoll = false; }, 3000);
+  });
+}
+
+function nextDay(){
+  roomUpdate(p=>({...p,day:p.day+1,phase:"rps",spins:0,lastAmt:null,
+    spinner:null,rpsWinner:null,
+    rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null}}));
+}
+
+// ── Render ────────────────────────────────────────────────────────────
+function renderGame(){
+  const r=G.room; if(!r) return;
+  show("s-game");
+  const opp=G.myId==="p1"?"p2":"p1";
+  const myN=G.myName, oppN=G.myId==="p1"?r.p2:r.p1;
+  const myS=r.score[G.myId]||0, oppS=r.score[opp]||0;
+  const iSpin=r.spinner===G.myId;
+  document.getElementById("bme-n").textContent=myN+" (you)";
+  document.getElementById("bme-s").textContent="£"+myS;
+  document.getElementById("bopp-n").textContent=oppN||"Waiting…";
+  document.getElementById("bopp-s").textContent="£"+oppS;
+  document.getElementById("day-lbl").textContent="Day "+r.day;
+  const sR=document.getElementById("sec-rps"),sP=document.getElementById("sec-pick"),sW=document.getElementById("sec-whl");
+  [sR,sP,sW].forEach(s=>s.classList.add("hidden"));
+
+  if(r.phase==="rps"){
+    sR.classList.remove("hidden");
+    const myC=r.rps[G.myId==="p1"?"p1c":"p2c"],oppC=r.rps[G.myId==="p1"?"p2c":"p1c"];
+    document.getElementById("rz-mn").textContent=myN;
+    document.getElementById("rz-on").textContent=oppN;
+    document.getElementById("rz-mw").textContent=r.rps.wins[G.myId]||0;
+    document.getElementById("rz-ow").textContent=r.rps.wins[opp]||0;
+    document.getElementById("rz-me").textContent=myC?EMOJ[myC]:"🤜";
+    document.getElementById("rz-oe").textContent=(myC&&oppC)?EMOJ[oppC]:oppC?"🤔":"🤛";
+    const bar=document.getElementById("rps-bar"); bar.className="sbar";
+    const res=r.rps.result;
+    if(!myC) bar.textContent="Choose your move!";
+    else if(!oppC) bar.textContent="⏳ Waiting for "+oppN+"…";
+    else if(res==="draw"){bar.textContent="It's a tie! Play again.";bar.classList.add("draw");}
+    else if(res===G.myId){bar.textContent="You win this round! 🎉";bar.classList.add("win");}
+    else{bar.textContent=oppN+" wins this round!";bar.classList.add("lose");}
+    document.querySelectorAll(".rps-btn").forEach(b=>{
+      b.disabled=!!myC; b.classList.remove("chosen");
+      if(myC&&b.getAttribute("onclick").includes("'"+myC+"'")) b.classList.add("chosen");
+    });
+  }
+
+  if(r.phase==="pick"){
+    sP.classList.remove("hidden");
+    const iWon=r.rpsWinner===G.myId;
+    document.getElementById("pick-ttl").textContent=iWon?"🏆 You won! Who spins today?":oppN+" won!";
+    document.getElementById("pick-sub").textContent=iWon?"You choose who faces the wheel":"Waiting for them to decide…";
+    const bd=document.getElementById("pick-btns"); bd.innerHTML="";
+    if(iWon){
+      [{id:G.myId,name:myN},{id:opp,name:oppN}].forEach(p=>{
+        const b=document.createElement("button");
+        b.className="btn "+(p.id===G.myId?"btn-teal":"btn-ghost");
+        b.textContent=p.name+" spins"; b.onclick=()=>pickSpinner(p.id); bd.appendChild(b);
+      });
+    } else {
+      bd.innerHTML='<div class="pw"><div class="pdot"></div>Waiting for '+oppN+'…</div>';
+    }
+  }
+
+  if(r.phase==="wheel"||r.phase==="done"){
+    sW.classList.remove("hidden");
+    const spinN=r.spinner===G.myId?myN:oppN;
+    document.getElementById("whl-who").textContent=iSpin?"Your turn to spin!":spinN+" is spinning…";
+    [0,1,2].forEach(i=>{
+      const p=document.getElementById("pip"+i); p.className="pip";
+      if(i<r.spins) p.classList.add("done");
+      else if(i===r.spins&&r.phase==="wheel") p.classList.add("now");
+    });
+    const rw=document.getElementById("res-wrap");
+    if(r.lastAmt!==null && r.lastAmt!==undefined){
+      rw.classList.remove("hidden");
+      document.getElementById("res-amt").textContent="£"+(r.lastAmt||"?");
+      document.getElementById("res-plr").textContent=spinN;
+      document.getElementById("res-tot").textContent="Total so far: £"+(r.spinner===G.myId?myS:oppS);
+    } else rw.classList.add("hidden");
+    const obs=document.getElementById("obs-note");
+    if(!iSpin&&r.phase==="wheel"){obs.classList.remove("hidden");obs.textContent="👀 Watching "+spinN+" spin…";}
+    else obs.classList.add("hidden");
+    const sb=document.getElementById("btn-spin"),nd=document.getElementById("btn-next");
+    if(iSpin&&r.phase==="wheel"){
+      sb.classList.remove("hidden");
+      sb.disabled = isSpinning || spinLock;
+      sb.textContent=r.spins===0?"Spin the Wheel ✨":"Spin Again ("+(3-r.spins)+" left) ✨";
+    } else sb.classList.add("hidden");
+    if(r.phase==="done") nd.classList.remove("hidden"); else nd.classList.add("hidden");
+    drawWheel(wheelRot);
+  }
+}
+
+// ── Summary ───────────────────────────────────────────────────────────
+function showSummary(){
+  const r=G.room; if(!r) return;
+  const opp=G.myId==="p1"?"p2":"p1";
+  const myN=G.myName,oppN=G.myId==="p1"?r.p2:r.p1;
+  const players=[
+    {id:G.myId,name:myN, score:r.score[G.myId]||0,spins:r.history.filter(h=>h.who===G.myId).length},
+    {id:opp,   name:oppN,score:r.score[opp]||0,   spins:r.history.filter(h=>h.who===opp).length},
+  ].sort((a,b)=>b.score-a.score);
+  const re=document.getElementById("sum-rows"); re.innerHTML="";
+  players.forEach((p,i)=>{
+    const d=document.createElement("div"); d.className="sum-row"; d.style.animationDelay=i*.1+"s";
+    d.innerHTML='<div class="srank">'+["①","②"][i]+'</div><div class="sinfo"><div class="sname">'+p.name+(p.id===G.myId?" (you)":"")+'</div><div class="sdet">'+p.spins+' spin'+(p.spins!==1?"s":"")+" · Day"+(r.day>1?"s":"")+' 1–'+r.day+'</div></div><div class="samt">£'+p.score+'</div>';
+    re.appendChild(d);
+  });
+  document.getElementById("sum-total").textContent="£"+((r.score.p1||0)+(r.score.p2||0));
+  const he=document.getElementById("sum-hist"); he.innerHTML="";
+  if(r.history.length>0){
+    const lbl=document.createElement("div");
+    lbl.style.cssText="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,237,213,.3);margin:12px 0 6px";
+    lbl.textContent="Spin History"; he.appendChild(lbl);
+    r.history.forEach(h=>{
+      const d=document.createElement("div"); d.className="hrow";
+      d.innerHTML='<span class="hday">Day '+h.day+'</span><span>'+(h.who===G.myId?myN:oppN)+'</span><span class="hamt">£'+h.amt+'</span>';
+      he.appendChild(d);
+    });
+  }
+  show("s-summary");
+}
+
+function backToGame(){show("s-game");renderGame();}
+
+function newGame(){
+  if(!confirm("Start a brand new game? All scores will be reset.")) return;
+  stopPolling();
+  G={myId:"",myName:"",code:"",room:null,lastV:0};
+  wheelRot=0; isSpinning=false; drawWheel(0);
+  document.getElementById("inp-name").value="";
+  document.getElementById("inp-code").value="";
+  show("s-home");
+}
+
+// ── Confetti ──────────────────────────────────────────────────────────
+function spawnConfetti(){
+  const cols=["#D4A843","#F0CC6E","#15B89F","#F4EDD5","#7A3E8A","#C04040"];
+  for(let i=0;i<50;i++){
+    const p=document.createElement("div"); p.className="cf";
+    const dur=(1.5+Math.random()*2).toFixed(2),del=(Math.random()*.45).toFixed(2);
+    p.style.cssText="left:"+Math.random()*100+"vw;top:-8px;width:7px;height:7px;background:"+cols[i%cols.length]+";animation-duration:"+dur+"s;animation-delay:"+del+"s";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),(+dur+ +del+.2)*1000);
+  }
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────
+drawWheel(0);
+const _urlRoom=new URLSearchParams(location.search).get("room");
+if(_urlRoom){
+  const c=_urlRoom.toUpperCase().replace(/[^A-Z]/g,"").slice(0,4);
+  document.getElementById("inp-code").value=c;
+  setTimeout(()=>toast("Room "+c+" detected — enter your name and tap Join! 👇"),400);
+}
+</script>
+</body>
+</html>
