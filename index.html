@@ -318,17 +318,33 @@ async function dbWrite(code, data) {
   }
 }
 
+// Firebase Realtime DB strips empty arrays/objects/null on write.
+// e.g. {history:[]} comes back without `history`. So `[...r.history]` throws.
+// Always run reads through this so callers see a fully-shaped room.
+function normalizeRoom(d) {
+  if (!d || typeof d !== "object") return d;
+  d.score = d.score || {p1:0, p2:0};
+  if (typeof d.score.p1 !== "number") d.score.p1 = 0;
+  if (typeof d.score.p2 !== "number") d.score.p2 = 0;
+  d.history = Array.isArray(d.history) ? d.history : [];
+  d.rps = d.rps || {};
+  d.rps.wins = d.rps.wins || {p1:0, p2:0};
+  if (typeof d.rps.wins.p1 !== "number") d.rps.wins.p1 = 0;
+  if (typeof d.rps.wins.p2 !== "number") d.rps.wins.p2 = 0;
+  return d;
+}
+
 async function dbRead(code) {
   try {
     // ?nc= busts browser cache so every poll gets a live response, not a cached one
     const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json?nc=${Date.now()}`, {cache:"no-store"});
     if (!r.ok) throw new Error("status "+r.status);
     let d; try { d = await r.json(); } catch(_){ d = null; }
-    return (d && typeof d === "object") ? d : null;
+    return normalizeRoom((d && typeof d === "object") ? d : null);
   } catch(e) {
     try {
       const s = localStorage.getItem("gp_"+code);
-      return s ? JSON.parse(s) : null;
+      return s ? normalizeRoom(JSON.parse(s)) : null;
     } catch(_){ return null; }
   }
 }
@@ -608,7 +624,7 @@ function doSpin(){
     spawnConfetti();
     const newSpins = spinsAtStart + 1;
     const newPhase = newSpins >= 3 ? "done" : "wheel";
-    const base = G.room || r;
+    const base = normalizeRoom({...G.room || r});
     const newScore = {...base.score, [G.myId]:(base.score[G.myId]||0)+seg.amt};
     const newHistory = [...base.history, {day:base.day, who:G.myId, amt:seg.amt}];
     const newRoom = {...base, score:newScore, spins:newSpins, lastAmt:seg.amt,
@@ -718,12 +734,13 @@ function renderGame(){
 
 // ── Summary ───────────────────────────────────────────────────────────
 function showSummary(){
-  const r=G.room; if(!r) return;
+  const r=normalizeRoom(G.room); if(!r) return;
   const opp=G.myId==="p1"?"p2":"p1";
   const myN=G.myName,oppN=G.myId==="p1"?r.p2:r.p1;
+  const hist=r.history;
   const players=[
-    {id:G.myId,name:myN, score:r.score[G.myId]||0,spins:r.history.filter(h=>h.who===G.myId).length},
-    {id:opp,   name:oppN,score:r.score[opp]||0,   spins:r.history.filter(h=>h.who===opp).length},
+    {id:G.myId,name:myN, score:r.score[G.myId]||0,spins:hist.filter(h=>h.who===G.myId).length},
+    {id:opp,   name:oppN,score:r.score[opp]||0,   spins:hist.filter(h=>h.who===opp).length},
   ].sort((a,b)=>b.score-a.score);
   const re=document.getElementById("sum-rows"); re.innerHTML="";
   players.forEach((p,i)=>{
@@ -733,11 +750,11 @@ function showSummary(){
   });
   document.getElementById("sum-total").textContent="£"+((r.score.p1||0)+(r.score.p2||0));
   const he=document.getElementById("sum-hist"); he.innerHTML="";
-  if(r.history.length>0){
+  if(hist.length>0){
     const lbl=document.createElement("div");
     lbl.style.cssText="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,237,213,.3);margin:12px 0 6px";
     lbl.textContent="Spin History"; he.appendChild(lbl);
-    r.history.forEach(h=>{
+    hist.forEach(h=>{
       const d=document.createElement("div"); d.className="hrow";
       d.innerHTML='<span class="hday">Day '+h.day+'</span><span>'+(h.who===G.myId?myN:oppN)+'</span><span class="hamt">£'+h.amt+'</span>';
       he.appendChild(d);
@@ -751,7 +768,12 @@ function backToGame(){show("s-game");renderGame();}
 function newGame(){
   if(!confirm("Start a brand new game? All scores will be reset.")) return;
   stopPolling();
+  // Clean up the old room in Firebase so the code can be reused without stale data
+  if(G.code) {
+    fetch(`${FIREBASE_URL}/rooms/${G.code}.json`,{method:"DELETE"}).catch(()=>{});
+  }
   G={myId:"",myName:"",code:"",room:null,lastV:0};
+  _lastSeenSpinKey="";
   wheelRot=0; isSpinning=false; drawWheel(0);
   document.getElementById("inp-name").value="";
   document.getElementById("inp-code").value="";
