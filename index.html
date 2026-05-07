@@ -320,7 +320,8 @@ async function dbWrite(code, data) {
 
 async function dbRead(code) {
   try {
-    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json`);
+    // ?nc= busts browser cache so every poll gets a live response, not a cached one
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json?nc=${Date.now()}`, {cache:"no-store"});
     if (!r.ok) throw new Error("status "+r.status);
     let d; try { d = await r.json(); } catch(_){ d = null; }
     return (d && typeof d === "object") ? d : null;
@@ -352,7 +353,7 @@ function startPolling(code) {
         G.room = data;
         onRemoteUpdate(data);
       }
-    } catch(e) {}
+    } catch(e) { console.error("Poll error:", e); }
   }, 1500);
 }
 function stopPolling() {
@@ -526,7 +527,11 @@ let _lastSeenSpinKey = ""; // "day-spins" — detects new spin results arriving 
 
 function onRemoteUpdate(data){
   const cur=document.querySelector(".screen.active")?.id;
-  if(cur==="s-lobby"&&data.ready&&data.p2){show("s-game");renderGame();return;}
+  if(cur==="s-lobby"&&data.ready&&data.p2&&data.p1===G.myName){
+    toast("🎉 "+data.p2+" joined! Starting…");
+    setTimeout(()=>{show("s-game");renderGame();},1200);
+    return;
+  }
   if(data.phase==="rps"&&data.rps.p1c&&data.rps.p2c&&G.myId==="p1"){
     resolveRPS(data); return;
   }
@@ -540,8 +545,9 @@ function onRemoteUpdate(data){
       const matching=SEGS.map((s,i)=>({s,i})).filter(({s})=>s.amt===data.lastAmt);
       if(matching.length){
         const forcedIdx=matching[Math.floor(Math.random()*matching.length)].i;
-        animateSpin(()=>renderGame(), forcedIdx);
-        return; // renderGame fires after animation finishes
+        _pausePoll=true; // hold poll so mid-animation reads don't clobber G.room
+        animateSpin(()=>{ _pausePoll=false; renderGame(); }, forcedIdx);
+        return;
       }
     }
   }
@@ -602,7 +608,6 @@ function doSpin(){
     spawnConfetti();
     const newSpins = spinsAtStart + 1;
     const newPhase = newSpins >= 3 ? "done" : "wheel";
-    // Build the new state directly — don't rely on G.room which may have been polled
     const base = G.room || r;
     const newScore = {...base.score, [G.myId]:(base.score[G.myId]||0)+seg.amt};
     const newHistory = [...base.history, {day:base.day, who:G.myId, amt:seg.amt}];
@@ -611,10 +616,9 @@ function doSpin(){
     G.lastV = newRoom.v;
     G.room  = newRoom;
     dbWrite(G.code, newRoom);
-    renderGame(); // render with confirmed state
-    spinLock = false;
-    // Resume poll after a delay (give Firebase time to confirm write)
-    setTimeout(() => { _pausePoll = false; }, 3000);
+    spinLock = false; // clear BEFORE renderGame so the spin button re-enables correctly
+    renderGame();
+    setTimeout(() => { _pausePoll = false; }, 2500);
   });
 }
 
