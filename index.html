@@ -23,10 +23,14 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;
 .col{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px}
 .row{display:flex;gap:10px}
 .card{background:rgba(255,255,255,.055);border:1px solid rgba(212,168,67,.22);border-radius:18px;padding:22px 18px;width:100%;max-width:400px}
-input[type=text]{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.22);border-radius:10px;
-  padding:12px 15px;color:#F4EDD5;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s}
-input[type=text]:focus{border-color:#D4A843}
+input[type=text],select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.22);border-radius:10px;
+  padding:12px 15px;color:#F4EDD5;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;appearance:none}
+input[type=text]:focus,select:focus{border-color:#D4A843}
 input[type=text]::placeholder{color:rgba(244,237,213,.3)}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23D4A843' d='M6 8L0 0h12z'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
+select option{background:#08030F;color:#F4EDD5}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 22px;border-radius:50px;
   border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;
   transition:transform .15s,box-shadow .15s;white-space:nowrap}
@@ -35,7 +39,9 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 .btn-gold{background:linear-gradient(135deg,#EEC85A,#C89820);color:#08030F;font-weight:600;box-shadow:0 4px 18px rgba(212,168,67,.35)}
 .btn-teal{background:linear-gradient(135deg,#12B094,#0A7A68);color:#fff;box-shadow:0 4px 18px rgba(18,176,148,.3)}
 .btn-ghost{background:transparent;border:1px solid rgba(212,168,67,.32);color:#D4A843}
+.btn-danger{background:transparent;border:1px solid rgba(192,40,40,.5);color:#e56b74}
 .btn-full{width:100%}
+.btn-tiny{padding:6px 12px;font-size:12px}
 .or-div{display:flex;align-items:center;gap:12px;color:rgba(244,237,213,.3);font-size:11px}
 .or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(212,168,67,.15)}
 .badges{display:flex;gap:9px;width:100%;max-width:400px}
@@ -43,9 +49,12 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 .badge.me{background:rgba(212,168,67,.07);border-color:rgba(212,168,67,.4)}
 .badge-name{font-size:11px;font-weight:500;margin-bottom:2px}
 .badge-score{font-family:'Cormorant Garamond',serif;font-size:22px;color:#EEC85A}
-.room-code{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(48px,14vw,72px);
-  letter-spacing:10px;background:linear-gradient(135deg,#EEC85A,#C89820);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;text-align:center}
+.spec-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:#7A5010;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);
+  padding:4px 10px;border-radius:50px}
+.room-code{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(38px,11vw,58px);
+  letter-spacing:6px;background:linear-gradient(135deg,#EEC85A,#C89820);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;text-align:center;word-break:break-all}
 .copy-link{background:rgba(255,255,255,.04);border:1px dashed rgba(212,168,67,.3);border-radius:10px;
   padding:11px 14px;font-size:12px;color:rgba(244,237,213,.45);cursor:pointer;text-align:center;
   word-break:break-all;transition:background .2s;line-height:1.6}
@@ -70,6 +79,17 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 .rps-btn.chosen{border-color:#D4A843;background:rgba(212,168,67,.2)}
 .rps-btn:disabled{opacity:.4;pointer-events:none}
 .rps-btn span{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#D4A843;font-family:'Outfit',sans-serif}
+.rock-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border-radius:50%;background:linear-gradient(135deg,#7d6650,#3d3025);
+  box-shadow:inset -3px -3px 6px rgba(0,0,0,.5),inset 3px 3px 6px rgba(255,255,255,.15),0 2px 6px rgba(0,0,0,.3);
+  position:relative}
+.rock-icon::before{content:'';position:absolute;width:5px;height:4px;border-radius:50%;
+  background:rgba(0,0,0,.35);top:9px;left:8px}
+.rock-icon::after{content:'';position:absolute;width:4px;height:3px;border-radius:50%;
+  background:rgba(255,255,255,.15);top:8px;right:9px}
+.rock-icon.lg{width:60px;height:60px}
+.rock-icon.lg::before{width:9px;height:7px;top:16px;left:14px}
+.rock-icon.lg::after{width:7px;height:5px;top:14px;right:16px}
 .sbar{width:100%;max-width:400px;border-radius:10px;padding:11px 14px;text-align:center;
   font-size:13px;border:1px solid rgba(212,168,67,.15);background:rgba(255,255,255,.04);
   color:rgba(244,237,213,.45);min-height:44px;display:flex;align-items:center;justify-content:center}
@@ -119,6 +139,11 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 .obs{font-size:12px;color:rgba(244,237,213,.38);text-align:center;padding:9px 14px;
   background:rgba(255,255,255,.03);border:1px solid rgba(212,168,67,.1);border-radius:8px;
   max-width:400px;width:100%}
+.recent-room{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.15);border-radius:10px;
+  padding:9px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;transition:all .15s}
+.recent-room:hover{background:rgba(212,168,67,.08);border-color:#D4A843}
+.recent-room .rcode{font-family:'Cormorant Garamond',serif;font-size:18px;color:#EEC85A;font-weight:600;letter-spacing:2px}
+.recent-room .rrole{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(244,237,213,.4);margin-left:auto}
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
   background:rgba(8,3,15,.96);border:1px solid rgba(212,168,67,.25);border-radius:50px;
   padding:9px 20px;font-size:13px;color:#F4EDD5;pointer-events:none;white-space:nowrap;
@@ -129,6 +154,48 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 @keyframes popin{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes slideup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
 .hidden{display:none!important}
+
+/* ── Modals ───────────────────────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(4,1,10,.78);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:9000;padding:18px;
+  animation:fadein .25s ease}
+.modal-bg.show{display:flex}
+.modal-card{background:linear-gradient(160deg,#140828,#0a0418);
+  border:1px solid rgba(212,168,67,.32);border-radius:20px;padding:24px 22px;
+  width:100%;max-width:380px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.7);
+  animation:popin .35s cubic-bezier(.34,1.56,.64,1)}
+.modal-ttl{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.modal-sub{font-size:13px;color:rgba(244,237,213,.55);margin-bottom:18px;line-height:1.5}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* RPS reveal modal */
+.rps-reveal{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0 18px}
+.rps-side{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rps-side .hand{font-size:64px;line-height:1;animation:popin .4s cubic-bezier(.34,1.56,.64,1)}
+.rps-side .nm{font-size:12px;color:rgba(244,237,213,.6)}
+.rps-vs-big{font-family:'Cormorant Garamond',serif;font-size:22px;color:rgba(244,237,213,.32)}
+.rps-banner{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:14px}
+.rps-banner.win{color:#4ECDC4}
+.rps-banner.lose{color:#e56b74}
+.rps-banner.draw{color:#D4A843}
+.cd-wrap{position:relative;width:74px;height:74px;margin:0 auto}
+.cd-wrap svg{transform:rotate(-90deg)}
+.cd-wrap .cd-bg{fill:none;stroke:rgba(212,168,67,.18);stroke-width:6}
+.cd-wrap .cd-fg{fill:none;stroke:#EEC85A;stroke-width:6;stroke-linecap:round;
+  transition:stroke-dashoffset 1s linear}
+.cd-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#EEC85A}
+.cd-hint{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,237,213,.32);margin-top:8px}
+
+/* Claim modal slot buttons */
+.claim-slot{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(212,168,67,.2);border-radius:12px;padding:13px 16px;cursor:pointer;
+  font-size:14px;color:#F4EDD5;text-align:left;width:100%;margin-bottom:9px;transition:all .15s}
+.claim-slot:hover{background:rgba(212,168,67,.1);border-color:#D4A843}
+.claim-slot .pn{font-weight:600;flex:1}
+.claim-slot .pr{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D4A843}
 </style>
 </head>
 <body>
@@ -145,15 +212,21 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
     </div>
     <div class="card col" style="gap:11px">
       <input type="text" id="inp-name" placeholder="Your name" maxlength="18" autocomplete="off">
-      <button class="btn btn-gold btn-full" id="btn-create" onclick="createRoom()">Create a Game Room →</button>
-      <div class="or-div" id="home-or">or join existing room</div>
-      <input type="text" id="inp-code" placeholder="ROOM CODE" maxlength="4"
-        style="letter-spacing:6px;text-align:center;text-transform:uppercase" autocomplete="off"
-        oninput="this.value=this.value.toUpperCase()">
-      <button class="btn btn-teal btn-full" id="btn-join" onclick="joinRoom()">Join Room →</button>
+      <div class="row" style="gap:8px">
+        <input type="text" id="inp-code" placeholder="ROOM NAME" maxlength="12"
+          style="flex:1;letter-spacing:3px;text-align:center;text-transform:uppercase" autocomplete="off"
+          oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+        <button class="btn btn-ghost btn-tiny" onclick="suggestCode()" title="Suggest a random room name">🎲</button>
+      </div>
+      <select id="inp-currency" title="Currency for new rooms (existing rooms keep their currency)"></select>
+      <button class="btn btn-gold btn-full" id="btn-enter" onclick="enterRoom()">Enter Room →</button>
+      <div id="recent-wrap" class="col hidden" style="gap:6px;margin-top:6px">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,237,213,.3);text-align:center">Recent rooms</div>
+        <div id="recent-list" class="col" style="gap:6px"></div>
+      </div>
     </div>
     <div style="font-size:11px;color:rgba(244,237,213,.2);text-align:center;max-width:300px;line-height:1.6">
-      Both players open this page on their own phone.<br>One creates a room, one joins with the code.
+      Persistent rooms — pick a name you'll remember.<br>Anyone with the room name can join or spectate.
     </div>
   </div>
 </div>
@@ -162,14 +235,15 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 <div id="s-lobby" class="screen">
   <div class="col" style="align-items:center;gap:20px">
     <div style="text-align:center">
-      <div class="ey">Your room code</div>
+      <div class="ey">Your room name</div>
       <div class="room-code" id="lob-code">----</div>
-      <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this code with your companion</div>
+      <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this name with your companion</div>
     </div>
     <div class="card col" style="gap:13px;text-align:center">
       <div class="copy-link" id="lob-link" onclick="copyLink()">📋 Tap to copy invite link</div>
       <div style="height:1px;background:rgba(212,168,67,.1)"></div>
       <div class="pw"><div class="pdot"></div>Waiting for companion to join…</div>
+      <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()" style="margin-top:4px">← Leave Room</button>
     </div>
   </div>
 </div>
@@ -181,7 +255,10 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
       <div class="badge me"><div class="badge-name" id="bme-n">You</div><div class="badge-score" id="bme-s">£0</div></div>
       <div class="badge"><div class="badge-name" id="bopp-n">Opponent</div><div class="badge-score" id="bopp-s">£0</div></div>
     </div>
-    <div style="text-align:center"><div class="ey" id="day-lbl">Day 1</div></div>
+    <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div class="ey" id="day-lbl">Day 1</div>
+      <div id="spec-badge" class="spec-tag hidden">👁 Spectator</div>
+    </div>
 
     <!-- RPS -->
     <div id="sec-rps" class="col" style="align-items:center;gap:12px">
@@ -189,19 +266,19 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
       <div class="rps-grid">
         <div class="rps-zone me">
           <div class="rzn" id="rz-mn">Me</div>
-          <div class="rze" id="rz-me">🤜</div>
+          <div class="rze" id="rz-me">✊</div>
           <div class="rzs" id="rz-mw">0</div>
         </div>
         <div class="rps-vs">vs</div>
         <div class="rps-zone">
           <div class="rzn" id="rz-on">Opp</div>
-          <div class="rze" id="rz-oe">🤛</div>
+          <div class="rze" id="rz-oe">✊</div>
           <div class="rzs" id="rz-ow">0</div>
         </div>
       </div>
       <div class="sbar" id="rps-bar">Choose your move!</div>
-      <div class="rps-choices">
-        <button class="rps-btn" onclick="castRPS('rock')">🪨<span>Rock</span></button>
+      <div class="rps-choices" id="rps-choices">
+        <button class="rps-btn" onclick="castRPS('rock')"><span class="rock-icon"></span><span>Rock</span></button>
         <button class="rps-btn" onclick="castRPS('paper')">📄<span>Paper</span></button>
         <button class="rps-btn" onclick="castRPS('scissors')">✂️<span>Scissors</span></button>
       </div>
@@ -241,6 +318,7 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
         <button class="btn btn-teal hidden" id="btn-spin" onclick="doSpin()">Spin the Wheel ✨</button>
         <button class="btn btn-teal hidden" id="btn-next" onclick="nextDay()">Next Day →</button>
         <button class="btn btn-ghost" onclick="showSummary()">View Summary</button>
+        <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()">← Leave</button>
       </div>
     </div>
   </div>
@@ -252,13 +330,73 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
     <div style="text-align:center">
       <div class="ey">✈ Travel Fund</div>
       <div class="gt" style="font-size:44px;line-height:1.05">The Pot</div>
+      <div id="sum-meta" style="font-size:11px;color:rgba(244,237,213,.32);margin-top:6px"></div>
     </div>
     <div id="sum-rows" class="col" style="gap:10px"></div>
     <div class="tbox"><div class="tlbl">Total Trip Fund</div><div class="tamt" id="sum-total">£0</div></div>
     <div id="sum-hist" class="col" style="gap:0;width:100%;max-width:400px"></div>
     <div class="row" style="justify-content:center;flex-wrap:wrap;gap:9px;margin-top:8px">
       <button class="btn btn-teal" onclick="backToGame()">Back to Game</button>
-      <button class="btn btn-ghost" onclick="newGame()">New Game</button>
+      <button class="btn btn-ghost" onclick="leaveRoom()">Leave Room</button>
+      <button class="btn btn-danger" onclick="resetRoom()">Reset Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RPS REVEAL MODAL ─────────────────────────────────────────── -->
+<div id="modal-rps" class="modal-bg" onclick="dismissRpsModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-ttl">Round Result</div>
+    <div class="rps-reveal">
+      <div class="rps-side">
+        <div class="hand" id="rpsm-h1">✊</div>
+        <div class="nm" id="rpsm-n1">P1</div>
+      </div>
+      <div class="rps-vs-big">vs</div>
+      <div class="rps-side">
+        <div class="hand" id="rpsm-h2">✊</div>
+        <div class="nm" id="rpsm-n2">P2</div>
+      </div>
+    </div>
+    <div class="rps-banner" id="rpsm-banner">Draw</div>
+    <div class="cd-wrap">
+      <svg width="74" height="74" viewBox="0 0 74 74">
+        <circle class="cd-bg" cx="37" cy="37" r="32"></circle>
+        <circle class="cd-fg" id="cd-ring" cx="37" cy="37" r="32"
+          stroke-dasharray="201" stroke-dashoffset="0"></circle>
+      </svg>
+      <div class="cd-num" id="cd-num">5</div>
+    </div>
+    <div class="cd-hint">Tap outside or press Esc to skip</div>
+  </div>
+</div>
+
+<!-- ── CLAIM SLOT MODAL ─────────────────────────────────────────── -->
+<div id="modal-claim" class="modal-bg">
+  <div class="modal-card">
+    <div class="modal-ttl">Pick a Slot</div>
+    <div class="modal-sub" id="claim-sub">This room is full. Who are you?</div>
+    <button class="claim-slot" id="claim-p1" onclick="doClaim('p1')">
+      <div class="pn" id="claim-p1n">Alice</div><div class="pr">Claim P1</div>
+    </button>
+    <button class="claim-slot" id="claim-p2" onclick="doClaim('p2')">
+      <div class="pn" id="claim-p2n">Bob</div><div class="pr">Claim P2</div>
+    </button>
+    <button class="claim-slot" onclick="doClaim('spectator')">
+      <div class="pn">👁 Spectate</div><div class="pr">Watch only</div>
+    </button>
+    <button class="btn btn-ghost btn-full" style="margin-top:6px" onclick="closeModal('modal-claim');claimResolve&&claimResolve(null)">Cancel</button>
+  </div>
+</div>
+
+<!-- ── CONFIRM IDENTITY MODAL ───────────────────────────────────── -->
+<div id="modal-confirm" class="modal-bg">
+  <div class="modal-card">
+    <div class="modal-ttl" id="cfm-ttl">Continue?</div>
+    <div class="modal-sub" id="cfm-sub"></div>
+    <div class="row" style="justify-content:center;gap:9px">
+      <button class="btn btn-teal" onclick="cfmResolve(true)">Yes, continue</button>
+      <button class="btn btn-ghost" onclick="cfmResolve(false)">Cancel</button>
     </div>
   </div>
 </div>
@@ -267,28 +405,73 @@ input[type=text]::placeholder{color:rgba(244,237,213,.3)}
 
 <script>
 // ══════════════════════════════════════════════════════════════════════
-//  THE GIVING POT v3  —  Real-time sync via Firebase REST (no SDK)
-//  Fallback: localStorage (same device / offline)
+//  THE GIVING POT v4  —  Persistent rooms, multi-currency, spectators
 // ══════════════════════════════════════════════════════════════════════
-
-// ── Firebase REST ─────────────────────────────────────────────────────
-// Uses Firebase Realtime Database via plain fetch() — no imports needed.
-// This database is open in test mode (valid until Netlify-hosted version
-// is stable, then swap with your own — see instructions in README below).
-//
-// HOW TO GET YOUR OWN FREE FIREBASE (takes ~3 minutes):
-//   1. Go to https://console.firebase.google.com
-//   2. Click "Add project" → name it anything → Continue → Create
-//   3. Left menu: Build → Realtime Database → Create database
-//      → Choose a region → "Start in test mode" → Enable
-//   4. Copy the database URL shown (ends in .firebasedatabase.app)
-//   5. Paste it as the value of FIREBASE_URL below
-//   6. Re-upload index.html to Netlify (just drag the file again)
 
 const FIREBASE_URL = "https://generouspot-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-// Partial update — only touches the fields you pass, never overwrites sibling fields.
-// Used for RPS choices so simultaneous writes don't clobber each other.
+// ── Currencies (ISO 4217) ─────────────────────────────────────────────
+const CURRENCIES = [
+  ["GBP","£","British Pound"],["USD","$","US Dollar"],["EUR","€","Euro"],
+  ["JPY","¥","Japanese Yen"],["CNY","¥","Chinese Yuan"],["INR","₹","Indian Rupee"],
+  ["MYR","RM","Malaysian Ringgit"],["SGD","S$","Singapore Dollar"],["AUD","A$","Australian Dollar"],
+  ["CAD","C$","Canadian Dollar"],["NZD","NZ$","New Zealand Dollar"],["HKD","HK$","Hong Kong Dollar"],
+  ["TWD","NT$","Taiwan Dollar"],["KRW","₩","South Korean Won"],["THB","฿","Thai Baht"],
+  ["VND","₫","Vietnamese Dong"],["IDR","Rp","Indonesian Rupiah"],["PHP","₱","Philippine Peso"],
+  ["AED","د.إ","UAE Dirham"],["SAR","ر.س","Saudi Riyal"],["QAR","ر.ق","Qatari Riyal"],
+  ["KWD","د.ك","Kuwaiti Dinar"],["BHD",".د.ب","Bahraini Dinar"],["OMR","ر.ع.","Omani Rial"],
+  ["JOD","د.ا","Jordanian Dinar"],["LBP","ل.ل","Lebanese Pound"],["EGP","E£","Egyptian Pound"],
+  ["ILS","₪","Israeli Shekel"],["TRY","₺","Turkish Lira"],["RUB","₽","Russian Ruble"],
+  ["UAH","₴","Ukrainian Hryvnia"],["PLN","zł","Polish Zloty"],["CZK","Kč","Czech Koruna"],
+  ["HUF","Ft","Hungarian Forint"],["RON","lei","Romanian Leu"],["BGN","лв","Bulgarian Lev"],
+  ["HRK","kn","Croatian Kuna"],["RSD","дин","Serbian Dinar"],["ISK","kr","Icelandic Krona"],
+  ["NOK","kr","Norwegian Krone"],["SEK","kr","Swedish Krona"],["DKK","kr","Danish Krone"],
+  ["CHF","CHF","Swiss Franc"],["MXN","Mex$","Mexican Peso"],["BRL","R$","Brazilian Real"],
+  ["ARS","AR$","Argentine Peso"],["CLP","CL$","Chilean Peso"],["COP","COL$","Colombian Peso"],
+  ["PEN","S/","Peruvian Sol"],["UYU","$U","Uruguayan Peso"],["VES","Bs.","Venezuelan Bolivar"],
+  ["BOB","Bs.","Bolivian Boliviano"],["PYG","₲","Paraguayan Guarani"],["DOP","RD$","Dominican Peso"],
+  ["CUP","₱","Cuban Peso"],["JMD","J$","Jamaican Dollar"],["TTD","TT$","Trinidad Dollar"],
+  ["BBD","Bds$","Barbadian Dollar"],["BSD","B$","Bahamian Dollar"],["XCD","EC$","East Caribbean Dollar"],
+  ["GTQ","Q","Guatemalan Quetzal"],["HNL","L","Honduran Lempira"],["NIO","C$","Nicaraguan Cordoba"],
+  ["CRC","₡","Costa Rican Colon"],["PAB","B/.","Panamanian Balboa"],["BZD","BZ$","Belize Dollar"],
+  ["ZAR","R","South African Rand"],["NGN","₦","Nigerian Naira"],["KES","KSh","Kenyan Shilling"],
+  ["UGX","USh","Ugandan Shilling"],["TZS","TSh","Tanzanian Shilling"],["RWF","FRw","Rwandan Franc"],
+  ["ETB","Br","Ethiopian Birr"],["GHS","₵","Ghanaian Cedi"],["XOF","CFA","West African Franc"],
+  ["XAF","FCFA","Central African Franc"],["MAD","د.م.","Moroccan Dirham"],["DZD","د.ج","Algerian Dinar"],
+  ["TND","د.ت","Tunisian Dinar"],["LYD","ل.د","Libyan Dinar"],["SDG","ج.س.","Sudanese Pound"],
+  ["MUR","₨","Mauritian Rupee"],["MGA","Ar","Malagasy Ariary"],["ZMW","ZK","Zambian Kwacha"],
+  ["BWP","P","Botswana Pula"],["NAD","N$","Namibian Dollar"],["MZN","MT","Mozambican Metical"],
+  ["AOA","Kz","Angolan Kwanza"],["CDF","FC","Congolese Franc"],["MWK","MK","Malawian Kwacha"],
+  ["LSL","L","Lesotho Loti"],["SZL","E","Swazi Lilangeni"],["BIF","FBu","Burundian Franc"],
+  ["DJF","Fdj","Djiboutian Franc"],["KMF","CF","Comorian Franc"],["SCR","₨","Seychelles Rupee"],
+  ["SOS","Sh","Somali Shilling"],["ERN","Nfk","Eritrean Nakfa"],["GMD","D","Gambian Dalasi"],
+  ["GNF","FG","Guinean Franc"],["LRD","L$","Liberian Dollar"],["SLL","Le","Sierra Leonean Leone"],
+  ["CVE","Esc","Cape Verdean Escudo"],["STN","Db","Sao Tome Dobra"],["MRU","UM","Mauritanian Ouguiya"],
+  ["PKR","₨","Pakistani Rupee"],["LKR","Rs","Sri Lankan Rupee"],["BDT","৳","Bangladeshi Taka"],
+  ["NPR","₨","Nepalese Rupee"],["BTN","Nu.","Bhutanese Ngultrum"],["MVR","Rf","Maldivian Rufiyaa"],
+  ["AFN","؋","Afghan Afghani"],["IRR","﷼","Iranian Rial"],["IQD","ع.د","Iraqi Dinar"],
+  ["SYP","£S","Syrian Pound"],["YER","﷼","Yemeni Rial"],["UZS","сум","Uzbek Som"],
+  ["KZT","₸","Kazakhstani Tenge"],["TMT","m","Turkmen Manat"],["TJS","SM","Tajik Somoni"],
+  ["KGS","с","Kyrgyz Som"],["MNT","₮","Mongolian Tugrik"],["LAK","₭","Lao Kip"],
+  ["KHR","៛","Cambodian Riel"],["MMK","K","Myanmar Kyat"],["BND","B$","Brunei Dollar"],
+  ["MOP","MOP$","Macanese Pataca"],["KPW","₩","North Korean Won"],["FJD","FJ$","Fijian Dollar"],
+  ["PGK","K","Papua New Guinea Kina"],["SBD","SI$","Solomon Islands Dollar"],["VUV","VT","Vanuatu Vatu"],
+  ["WST","WS$","Samoan Tala"],["TOP","T$","Tongan Pa'anga"],["XPF","CFP","CFP Franc"],
+  ["AMD","֏","Armenian Dram"],["AZN","₼","Azerbaijani Manat"],["GEL","₾","Georgian Lari"],
+  ["BYN","Br","Belarusian Ruble"],["MDL","L","Moldovan Leu"],["MKD","ден","Macedonian Denar"],
+  ["ALL","L","Albanian Lek"],["BAM","KM","Bosnia Mark"],["GIP","£","Gibraltar Pound"],
+  ["FKP","£","Falkland Pound"],["SHP","£","Saint Helena Pound"],["IMP","£","Manx Pound"],
+  ["JEP","£","Jersey Pound"],["GGP","£","Guernsey Pound"],["KYD","CI$","Cayman Dollar"],
+  ["BMD","BD$","Bermudian Dollar"],["AWG","ƒ","Aruban Florin"],["ANG","ƒ","Netherlands Antillean Guilder"],
+  ["SRD","Sr$","Surinamese Dollar"],["GYD","GY$","Guyanese Dollar"],["HTG","G","Haitian Gourde"],
+];
+
+function fmtMoney(n){
+  const sym = (G.room && G.room.currency && G.room.currency.symbol) || "£";
+  return sym + (n!=null ? n : 0);
+}
+
+// ── Firebase REST ─────────────────────────────────────────────────────
 async function dbPatch(code, path, data) {
   try {
     const r = await fetch(`${FIREBASE_URL}/rooms/${code}/${path}.json`, {
@@ -318,9 +501,15 @@ async function dbWrite(code, data) {
   }
 }
 
+async function dbDelete(code) {
+  try {
+    await fetch(`${FIREBASE_URL}/rooms/${code}.json`, {method:"DELETE"});
+    try { localStorage.removeItem("gp_"+code); } catch(_){}
+    return true;
+  } catch(e) { return false; }
+}
+
 // Firebase Realtime DB strips empty arrays/objects/null on write.
-// e.g. {history:[]} comes back without `history`. So `[...r.history]` throws.
-// Always run reads through this so callers see a fully-shaped room.
 function normalizeRoom(d) {
   if (!d || typeof d !== "object") return d;
   d.score = d.score || {p1:0, p2:0};
@@ -331,16 +520,19 @@ function normalizeRoom(d) {
   d.rps.wins = d.rps.wins || {p1:0, p2:0};
   if (typeof d.rps.wins.p1 !== "number") d.rps.wins.p1 = 0;
   if (typeof d.rps.wins.p2 !== "number") d.rps.wins.p2 = 0;
+  d.currency = d.currency || {code:"GBP", symbol:"£"};
+  if (!d.currency.symbol) d.currency.symbol = "£";
+  d.p1 = d.p1 || "";
+  d.p2 = d.p2 || "";
   return d;
 }
 
 async function dbRead(code) {
   try {
-    // ?nc= busts browser cache so every poll gets a live response, not a cached one
     const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json?nc=${Date.now()}`, {cache:"no-store"});
     if (!r.ok) throw new Error("status "+r.status);
     let d; try { d = await r.json(); } catch(_){ d = null; }
-    return normalizeRoom((d && typeof d === "object") ? d : null);
+    return (d && typeof d === "object") ? normalizeRoom(d) : null;
   } catch(e) {
     try {
       const s = localStorage.getItem("gp_"+code);
@@ -350,7 +542,7 @@ async function dbRead(code) {
 }
 
 let _poll = null;
-let _pausePoll = false; // pause poll during spin to avoid race condition
+let _pausePoll = false;
 function startPolling(code) {
   stopPolling();
   _poll = setInterval(async () => {
@@ -359,15 +551,14 @@ function startPolling(code) {
       const data = await dbRead(code);
       if (!data) return;
       const vChanged = typeof data.v === "number" && data.v > G.lastV;
-      // Also detect when an opponent's RPS choice arrives even if version didn't increment
-      // (happens when both players write simultaneously and end up with the same version)
       const rpsChanged = data.phase === "rps" && data.rps && G.room &&
         (data.rps.p1c !== (G.room.rps?.p1c ?? null) ||
          data.rps.p2c !== (G.room.rps?.p2c ?? null));
       if (vChanged || rpsChanged) {
         if (vChanged) G.lastV = data.v;
+        const prev = G.room;
         G.room = data;
-        onRemoteUpdate(data);
+        onRemoteUpdate(data, prev);
       }
     } catch(e) { console.error("Poll error:", e); }
   }, 1500);
@@ -378,12 +569,12 @@ function stopPolling() {
 
 // ── Wheel ─────────────────────────────────────────────────────────────
 const SEGS=[
-  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£100",amt:100,col:"#0D9678"},
-  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£150",amt:150,col:"#2A1250"},
-  {label:"£100", amt:100, col:"#0D9678"},{label:"£200",amt:200,col:"#9A6E10"},
-  {label:"£50",  amt:50,  col:"#0A6868"},{label:"£100",amt:100,col:"#0D9678"},
-  {label:"£250", amt:250, col:"#682878"},{label:"£50", amt:50, col:"#0A6868"},
-  {label:"£100", amt:100, col:"#0D9678"},{label:"£300",amt:300,col:"#8C2424"},
+  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
+  {amt:50, col:"#0A6868"},{amt:150,col:"#2A1250"},
+  {amt:100,col:"#0D9678"},{amt:200,col:"#9A6E10"},
+  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
+  {amt:250,col:"#682878"},{amt:50, col:"#0A6868"},
+  {amt:100,col:"#0D9678"},{amt:300,col:"#8C2424"},
 ];
 const NSEG=SEGS.length, SA=(2*Math.PI)/NSEG;
 let wheelRot=0, isSpinning=false;
@@ -401,7 +592,7 @@ function drawWheel(rot) {
     ctx.textAlign="right"; ctx.fillStyle="#F4EDD5";
     ctx.font="600 "+(s.amt>=250?11:13)+"px sans-serif";
     ctx.shadowColor="rgba(0,0,0,.8)"; ctx.shadowBlur=3;
-    ctx.fillText(s.label,r-10,5); ctx.restore();
+    ctx.fillText(fmtMoney(s.amt),r-10,5); ctx.restore();
   });
   ctx.beginPath(); ctx.arc(cx,cy,20,0,2*Math.PI);
   ctx.fillStyle="#080312"; ctx.fill();
@@ -411,8 +602,6 @@ function drawWheel(rot) {
 }
 
 function calcSpinEnd(startRot, targetIdx, extraSpins) {
-  // For segment i to land under the pointer (top of wheel, angle = -π/2):
-  //   rot + i*SA - π/2 + SA/2 = -π/2  →  rot = -(i+0.5)*SA  (mod 2π)
   const targetAngle = ((-(targetIdx + 0.5) * SA) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
   const afterExtrasMod = ((startRot + extraSpins) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
   const alignDelta = (targetAngle - afterExtrasMod + 2*Math.PI) % (2*Math.PI);
@@ -449,22 +638,47 @@ function animateSpin(onDone, forcedIdx) {
 
 // ── State ─────────────────────────────────────────────────────────────
 const BEATS={rock:"scissors",paper:"rock",scissors:"paper"};
-const EMOJ={rock:"🪨",paper:"📄",scissors:"✂️"};
-
-function genCode(){
-  return Array.from({length:4},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ"[Math.floor(Math.random()*24)]).join("");
+const EMOJ_MAP={rock:"ROCK_ICON",paper:"📄",scissors:"✂️"}; // rock is rendered specially
+function emojiFor(c){
+  if(c==="rock") return '<span class="rock-icon"></span>';
+  if(c==="paper") return "📄";
+  if(c==="scissors") return "✂️";
+  return "";
 }
-function mkRoom(p1){
+function emojiBig(c){
+  if(c==="rock") return '<span class="rock-icon lg"></span>';
+  if(c==="paper") return "📄";
+  if(c==="scissors") return "✂️";
+  return "";
+}
+
+const CODE_ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // 24 letters (no I/O)
+function genCode(len){
+  len = len || 4;
+  return Array.from({length:len},()=>CODE_ALPHA[Math.floor(Math.random()*CODE_ALPHA.length)]).join("");
+}
+function sanitizeCode(s){
+  return (s||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
+}
+
+function mkRoom(opts){
+  const p1 = opts.p1 || "";
+  const cur = opts.currency || {code:"GBP", symbol:"£"};
+  const now = Date.now();
   return{v:1,p1,p2:"",ready:false,phase:"rps",day:1,
+    currency:cur,
     score:{p1:0,p2:0},
     rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null},
-    spinner:null,spins:0,lastAmt:null,rpsWinner:null,history:[]};
+    spinner:null,spins:0,lastAmt:null,rpsWinner:null,history:[],
+    firstPlayedAt:now,lastPlayedAt:now};
 }
-let G={myId:"",myName:"",code:"",room:null,lastV:0};
+let G={myId:"",myName:"",code:"",room:null,lastV:0,rpsModalActive:false};
 
 function roomUpdate(fn){
+  if(G.myId==="spectator") return; // spectators never write
   const next=fn(G.room);
   next.v=(G.room?.v||0)+1;
+  next.lastPlayedAt=Date.now();
   G.lastV=next.v; G.room=next;
   dbWrite(G.code,next);
   renderGame();
@@ -481,51 +695,168 @@ function toast(msg,dur=3500){
   el.textContent=msg; el.classList.add("show");
   setTimeout(()=>el.classList.remove("show"),dur);
 }
+function openModal(id){ document.getElementById(id).classList.add("show"); }
+function closeModal(id){ document.getElementById(id).classList.remove("show"); }
 
-// ── Actions ───────────────────────────────────────────────────────────
-async function createRoom(){
-  const name=document.getElementById("inp-name").value.trim();
-  if(!name){toast("✏️ Enter your name first");return;}
-  const btn=document.getElementById("btn-create");
-  btn.disabled=true; btn.textContent="Creating…";
-  try{
-    const code=genCode(), room=mkRoom(name);
-    const ok=await dbWrite(code,room);
-    G.myId="p1"; G.myName=name; G.code=code; G.room=room; G.lastV=1;
-    document.getElementById("lob-code").textContent=code;
-    const link=location.origin+location.pathname+"?room="+code;
-    document.getElementById("lob-link").textContent="📋 "+link;
-    show("s-lobby");
-    if(!ok) toast("⚠️ No internet sync — share the code manually. Works on this device only.");
-    startPolling(code);
-  }catch(e){
-    toast("❌ Error creating room. Please try again.");
-    console.error("createRoom:",e);
-  }finally{
-    btn.disabled=false; btn.textContent="Create a Game Room →";
-  }
+// ── Recent rooms (localStorage) ───────────────────────────────────────
+const REC_KEY = "gp_recent";
+function loadRecent(){
+  try { return JSON.parse(localStorage.getItem(REC_KEY)||"[]"); } catch(_){ return []; }
+}
+function saveRecent(code, myId, myName){
+  let list = loadRecent().filter(r => r.code !== code);
+  list.unshift({code, myId, myName, ts:Date.now()});
+  list = list.slice(0,5);
+  try { localStorage.setItem(REC_KEY, JSON.stringify(list)); } catch(_){}
+}
+function renderRecent(){
+  const list = loadRecent();
+  const wrap = document.getElementById("recent-wrap");
+  const ul = document.getElementById("recent-list");
+  if(!list.length){ wrap.classList.add("hidden"); return; }
+  wrap.classList.remove("hidden");
+  ul.innerHTML = "";
+  list.forEach(r=>{
+    const d = document.createElement("div");
+    d.className = "recent-room";
+    const role = r.myId === "spectator" ? "Watch" : (r.myId || "—").toUpperCase();
+    d.innerHTML = `<span class="rcode">${r.code}</span><span style="color:rgba(244,237,213,.6)">${r.myName||""}</span><span class="rrole">${role}</span>`;
+    d.onclick = () => {
+      document.getElementById("inp-code").value = r.code;
+      document.getElementById("inp-name").value = r.myName || "";
+    };
+    ul.appendChild(d);
+  });
 }
 
-async function joinRoom(){
-  const name=document.getElementById("inp-name").value.trim();
-  const code=document.getElementById("inp-code").value.trim().toUpperCase();
-  if(!name){toast("✏️ Enter your name");return;}
-  if(code.length!==4){toast("Enter the 4-letter room code");return;}
-  const btn=document.getElementById("btn-join");
-  btn.disabled=true; btn.textContent="Joining…";
-  try{
-    const existing=await dbRead(code);
-    if(!existing){toast("❌ Room '"+code+"' not found — check the code");return;}
-    const updated={...existing,p2:name,ready:true,v:existing.v+1};
-    await dbWrite(code,updated);
-    G.myId="p2"; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
-    startPolling(code);
-    show("s-game"); renderGame();
-  }catch(e){
-    toast("❌ Could not join — check code and connection");
-    console.error("joinRoom:",e);
-  }finally{
-    btn.disabled=false; btn.textContent="Join Room →";
+// ── Currency picker ───────────────────────────────────────────────────
+function buildCurrencyPicker(){
+  const sel = document.getElementById("inp-currency");
+  CURRENCIES.forEach(([code,sym,name])=>{
+    const o = document.createElement("option");
+    o.value = code; o.textContent = `${code} — ${sym} — ${name}`;
+    if(code==="GBP") o.selected = true;
+    sel.appendChild(o);
+  });
+}
+function getCurrencyByCode(code){
+  const f = CURRENCIES.find(c=>c[0]===code);
+  return f ? {code:f[0], symbol:f[1]} : {code:"GBP", symbol:"£"};
+}
+
+// ── Confirm modal helper ──────────────────────────────────────────────
+let _cfmResolve = null;
+function confirmDlg(title, sub){
+  return new Promise(res=>{
+    document.getElementById("cfm-ttl").textContent = title;
+    document.getElementById("cfm-sub").textContent = sub;
+    _cfmResolve = res;
+    openModal("modal-confirm");
+  });
+}
+function cfmResolve(v){
+  closeModal("modal-confirm");
+  if(_cfmResolve){ const r = _cfmResolve; _cfmResolve = null; r(v); }
+}
+
+// ── Claim modal helper ────────────────────────────────────────────────
+let claimResolve = null;
+function showClaim(p1n, p2n){
+  return new Promise(res=>{
+    document.getElementById("claim-sub").textContent = `This room has ${p1n} (P1) and ${p2n} (P2). Who are you?`;
+    document.getElementById("claim-p1n").textContent = p1n;
+    document.getElementById("claim-p2n").textContent = p2n;
+    claimResolve = res;
+    openModal("modal-claim");
+  });
+}
+function doClaim(slot){
+  closeModal("modal-claim");
+  if(claimResolve){ const r = claimResolve; claimResolve = null; r(slot); }
+}
+
+// ── Entry flow ────────────────────────────────────────────────────────
+function suggestCode(){
+  document.getElementById("inp-code").value = genCode(5);
+}
+
+async function enterRoom(){
+  const name = document.getElementById("inp-name").value.trim();
+  const codeRaw = document.getElementById("inp-code").value.trim();
+  const code = sanitizeCode(codeRaw);
+  if(!name){ toast("✏️ Enter your name first"); return; }
+  if(code.length < 3){ toast("Room name must be at least 3 letters/digits"); return; }
+
+  const btn = document.getElementById("btn-enter");
+  btn.disabled = true; btn.textContent = "Entering…";
+  try {
+    const existing = await dbRead(code);
+
+    // Case 1: room doesn't exist → CREATE
+    if(!existing){
+      const curCode = document.getElementById("inp-currency").value;
+      const room = mkRoom({p1:name, currency:getCurrencyByCode(curCode)});
+      const ok = await dbWrite(code, room);
+      G.myId="p1"; G.myName=name; G.code=code; G.room=room; G.lastV=1;
+      saveRecent(code, "p1", name);
+      document.getElementById("lob-code").textContent = code;
+      const link = location.origin + location.pathname + "?room=" + code;
+      document.getElementById("lob-link").textContent = "📋 " + link;
+      show("s-lobby");
+      if(!ok) toast("⚠️ No internet sync — works on this device only.");
+      startPolling(code);
+      return;
+    }
+
+    // Case 2: name matches p1 → CONFIRM + RESUME
+    const lc = name.toLowerCase();
+    if(existing.p1 && existing.p1.toLowerCase() === lc){
+      const ok = await confirmDlg("Continue as "+existing.p1+"?", "You are P1 in room "+code+".");
+      if(!ok) return;
+      G.myId="p1"; G.myName=existing.p1; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "p1", existing.p1);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+    if(existing.p2 && existing.p2.toLowerCase() === lc){
+      const ok = await confirmDlg("Continue as "+existing.p2+"?", "You are P2 in room "+code+".");
+      if(!ok) return;
+      G.myId="p2"; G.myName=existing.p2; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "p2", existing.p2);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+
+    // Case 3: p2 slot empty → JOIN as p2
+    if(!existing.p2){
+      const updated = {...existing, p2:name, ready:true, v:(existing.v||0)+1, lastPlayedAt:Date.now()};
+      await dbWrite(code, updated);
+      G.myId="p2"; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
+      saveRecent(code, "p2", name);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+
+    // Case 4: both filled, name matches neither → CLAIM modal
+    const slot = await showClaim(existing.p1, existing.p2);
+    if(!slot) return;
+    if(slot === "spectator"){
+      G.myId="spectator"; G.myName=name; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "spectator", name);
+      startPolling(code); show("s-game"); renderGame();
+      toast("👁 Spectating "+code);
+      return;
+    }
+    // Claim p1 or p2 → overwrite that slot's name
+    const updated = {...existing, [slot]:name, ready:true, v:(existing.v||0)+1, lastPlayedAt:Date.now()};
+    await dbWrite(code, updated);
+    G.myId=slot; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
+    saveRecent(code, slot, name);
+    startPolling(code); show("s-game"); renderGame();
+    toast("Claimed slot "+slot.toUpperCase());
+
+  } catch(e){
+    toast("❌ Could not enter room — check connection");
+    console.error("enterRoom:", e);
+  } finally {
+    btn.disabled = false; btn.textContent = "Enter Room →";
   }
 }
 
@@ -539,19 +870,40 @@ function copyLink(){
 }
 
 // ── Remote sync ───────────────────────────────────────────────────────
-let _lastSeenSpinKey = ""; // "day-spins" — detects new spin results arriving for the observer
+let _lastSeenSpinKey = "";
+let _lastRpsKey = ""; // "day-roundsPlayed" — detects new RPS reveals
 
-function onRemoteUpdate(data){
+function rpsRevealKey(d){
+  // A reveal is "new" when result is set AND lastP1/lastP2 are present
+  if(!d || !d.rps || !d.rps.result || !d.rps.lastP1 || !d.rps.lastP2) return "";
+  // Use day + total wins as a stable key per round
+  return d.day + "-" + ((d.rps.wins.p1||0)+(d.rps.wins.p2||0)) + "-" + d.rps.lastP1 + d.rps.lastP2;
+}
+
+function onRemoteUpdate(data, prev){
   const cur=document.querySelector(".screen.active")?.id;
-  if(cur==="s-lobby"&&data.ready&&data.p2&&data.p1===G.myName){
+
+  // Lobby → game transition (host sees opponent join)
+  if(cur==="s-lobby" && data.p2 && data.p1===G.myName){
     toast("🎉 "+data.p2+" joined! Starting…");
     setTimeout(()=>{show("s-game");renderGame();},1200);
     return;
   }
-  if(data.phase==="rps"&&data.rps.p1c&&data.rps.p2c&&G.myId==="p1"){
+
+  // Detect RPS reveal — fires for both players + spectators
+  const revealKey = rpsRevealKey(data);
+  if(revealKey && revealKey !== _lastRpsKey){
+    _lastRpsKey = revealKey;
+    showRpsModal(data);
+    // fall through to also handle spin mirroring etc.
+  }
+
+  // p1 resolves RPS when both choices are in
+  if(data.phase==="rps" && data.rps.p1c && data.rps.p2c && G.myId==="p1"){
     resolveRPS(data); return;
   }
-  // Observer: when spinner's new result arrives, mirror the spin animation locally
+
+  // Observer: mirror spinner's animation
   if((data.phase==="wheel"||data.phase==="done") &&
       data.spinner && data.spinner!==G.myId &&
       data.spins>0 && data.lastAmt!=null && !isSpinning){
@@ -561,7 +913,7 @@ function onRemoteUpdate(data){
       const matching=SEGS.map((s,i)=>({s,i})).filter(({s})=>s.amt===data.lastAmt);
       if(matching.length){
         const forcedIdx=matching[Math.floor(Math.random()*matching.length)].i;
-        _pausePoll=true; // hold poll so mid-animation reads don't clobber G.room
+        _pausePoll=true;
         animateSpin(()=>{ _pausePoll=false; renderGame(); }, forcedIdx);
         return;
       }
@@ -570,22 +922,85 @@ function onRemoteUpdate(data){
   renderGame();
 }
 
+// ── RPS reveal modal w/ 5s circular countdown ─────────────────────────
+let _cdTimer = null;
+let _cdRaf = null;
+function showRpsModal(data){
+  const r = data;
+  const myId = G.myId === "spectator" ? "p1" : G.myId; // spectator default perspective
+  const oppId = myId === "p1" ? "p2" : "p1";
+  const myName = G.myId==="spectator" ? r.p1 : G.myName;
+  const oppName = G.myId==="spectator" ? r.p2 : (G.myId==="p1" ? r.p2 : r.p1);
+  const myHand = r.rps[myId==="p1"?"lastP1":"lastP2"];
+  const oppHand = r.rps[myId==="p1"?"lastP2":"lastP1"];
+  document.getElementById("rpsm-h1").innerHTML = emojiBig(myHand);
+  document.getElementById("rpsm-h2").innerHTML = emojiBig(oppHand);
+  document.getElementById("rpsm-n1").textContent = myName + (G.myId!=="spectator" ? " (you)" : "");
+  document.getElementById("rpsm-n2").textContent = oppName;
+  const banner = document.getElementById("rpsm-banner");
+  banner.className = "rps-banner";
+  if(r.rps.result === "draw"){ banner.textContent = "Draw!"; banner.classList.add("draw"); }
+  else if(r.rps.result === myId && G.myId !== "spectator"){ banner.textContent = "You win this round!"; banner.classList.add("win"); }
+  else if(G.myId === "spectator"){
+    const wn = r.rps.result === "p1" ? r.p1 : r.p2;
+    banner.textContent = wn + " wins!"; banner.classList.add("win");
+  }
+  else { banner.textContent = oppName + " wins this round!"; banner.classList.add("lose"); }
+
+  G.rpsModalActive = true;
+  openModal("modal-rps");
+
+  const ring = document.getElementById("cd-ring");
+  const numEl = document.getElementById("cd-num");
+  const C = 2 * Math.PI * 32; // 201.06
+  ring.setAttribute("stroke-dasharray", C.toFixed(2));
+  ring.setAttribute("stroke-dashoffset", "0");
+  // force reflow
+  void ring.getBoundingClientRect();
+  ring.style.transition = "stroke-dashoffset 5s linear";
+  ring.setAttribute("stroke-dashoffset", C.toFixed(2));
+
+  let n = 5;
+  numEl.textContent = n;
+  if(_cdTimer) clearInterval(_cdTimer);
+  _cdTimer = setInterval(()=>{
+    n -= 1;
+    numEl.textContent = Math.max(n,0);
+    if(n <= 0){ clearInterval(_cdTimer); _cdTimer = null; closeRpsModal(); }
+  }, 1000);
+
+  // also auto-dismiss after 5s as failsafe
+  setTimeout(()=>{ if(G.rpsModalActive) closeRpsModal(); }, 5100);
+}
+function dismissRpsModal(ev){
+  if(ev && ev.target.closest && ev.target.closest(".modal-card")) return;
+  closeRpsModal();
+}
+function closeRpsModal(){
+  if(!G.rpsModalActive) return;
+  G.rpsModalActive = false;
+  if(_cdTimer){ clearInterval(_cdTimer); _cdTimer = null; }
+  const ring = document.getElementById("cd-ring");
+  if(ring){ ring.style.transition = "none"; ring.setAttribute("stroke-dashoffset","0"); }
+  closeModal("modal-rps");
+  renderGame();
+}
+document.addEventListener("keydown",(e)=>{
+  if(e.key === "Escape" && G.rpsModalActive) closeRpsModal();
+});
+
 // ── RPS ───────────────────────────────────────────────────────────────
 function castRPS(choice){
+  if(G.myId==="spectator") return;
   const r=G.room; if(!r) return;
   const f=G.myId==="p1"?"p1c":"p2c";
   if(r.rps[f]) return;
 
-  // Update local state immediately so the button highlights right away
   G.room = {...G.room, rps:{...G.room.rps, [f]:choice}};
   renderGame();
 
-  // PATCH only this player's field so we never overwrite the opponent's simultaneous write.
-  // Full PUT (roomUpdate) would race: both players read v=5, both write v=6 with only their
-  // own choice set — Firebase last-write-wins and one choice is lost forever.
   dbPatch(G.code, "rps", {[f]:choice}).catch(e=>console.warn("castRPS:", e));
 
-  // If p1 already sees both choices in local state (opponent chose first), resolve now
   if(G.myId==="p1" && G.room.rps.p1c && G.room.rps.p2c){
     resolveRPS(G.room);
   }
@@ -602,18 +1017,20 @@ function resolveRPS(room){
 }
 
 function pickSpinner(pid){
+  if(G.myId==="spectator") return;
   roomUpdate(p=>({...p,phase:"wheel",spinner:pid,spins:0,lastAmt:null}));
 }
 
 // ── Spin ──────────────────────────────────────────────────────────────
 let spinLock = false;
 function doSpin(){
+  if(G.myId==="spectator") return;
   const r=G.room;
   if(!r || r.spinner!==G.myId || r.spins>=3 || isSpinning || spinLock) return;
   spinLock = true;
-  _pausePoll = true; // freeze poll so remote stale data doesn't overwrite result
+  _pausePoll = true;
   document.getElementById("btn-spin").disabled=true;
-  const spinsAtStart = r.spins; // capture before any async changes
+  const spinsAtStart = r.spins;
   animateSpin(seg=>{
     if(!seg || typeof seg.amt !== "number"){
       console.error("Bad segment", seg);
@@ -628,18 +1045,20 @@ function doSpin(){
     const newScore = {...base.score, [G.myId]:(base.score[G.myId]||0)+seg.amt};
     const newHistory = [...base.history, {day:base.day, who:G.myId, amt:seg.amt}];
     const newRoom = {...base, score:newScore, spins:newSpins, lastAmt:seg.amt,
-                    history:newHistory, phase:newPhase, v:(base.v||0)+1};
+                    history:newHistory, phase:newPhase, v:(base.v||0)+1, lastPlayedAt:Date.now()};
     G.lastV = newRoom.v;
     G.room  = newRoom;
     dbWrite(G.code, newRoom);
-    spinLock = false; // clear BEFORE renderGame so the spin button re-enables correctly
+    spinLock = false;
     renderGame();
     setTimeout(() => { _pausePoll = false; }, 2500);
   });
 }
 
 function nextDay(){
+  if(G.myId==="spectator") return;
   _lastSeenSpinKey="";
+  _lastRpsKey="";
   roomUpdate(p=>({...p,day:p.day+1,phase:"rps",spins:0,lastAmt:null,
     spinner:null,rpsWinner:null,
     rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null}}));
@@ -647,49 +1066,67 @@ function nextDay(){
 
 // ── Render ────────────────────────────────────────────────────────────
 function renderGame(){
+  if(G.rpsModalActive) return; // gate redraws while reveal is up
   const r=G.room; if(!r) return;
   const cur=document.querySelector(".screen.active")?.id;
-  if(cur==="s-summary") return; // don't yank user off summary when a poll fires
+  if(cur==="s-summary") return;
   show("s-game");
-  const opp=G.myId==="p1"?"p2":"p1";
-  const myN=G.myName, oppN=G.myId==="p1"?r.p2:r.p1;
-  const myS=r.score[G.myId]||0, oppS=r.score[opp]||0;
-  const iSpin=r.spinner===G.myId;
-  document.getElementById("bme-n").textContent=myN+" (you)";
-  document.getElementById("bme-s").textContent="£"+myS;
-  document.getElementById("bopp-n").textContent=oppN||"Waiting…";
-  document.getElementById("bopp-s").textContent="£"+oppS;
-  document.getElementById("day-lbl").textContent="Day "+r.day;
+  const isSpec = G.myId==="spectator";
+  document.getElementById("spec-badge").classList.toggle("hidden", !isSpec);
+  // For spectators we frame from p1's perspective for "me" badges
+  const myId = isSpec ? "p1" : G.myId;
+  const opp = myId==="p1" ? "p2" : "p1";
+  const myN = isSpec ? r.p1 : G.myName;
+  const oppN = isSpec ? r.p2 : (G.myId==="p1" ? r.p2 : r.p1);
+  const myS = r.score[myId]||0, oppS = r.score[opp]||0;
+  const iSpin = !isSpec && r.spinner===G.myId;
+  document.getElementById("bme-n").textContent = myN + (isSpec ? " (P1)" : " (you)");
+  document.getElementById("bme-s").textContent = fmtMoney(myS);
+  document.getElementById("bopp-n").textContent = oppN || "Waiting…";
+  document.getElementById("bopp-s").textContent = fmtMoney(oppS);
+  document.getElementById("day-lbl").textContent = "Day " + r.day + " · Room " + G.code;
   const sR=document.getElementById("sec-rps"),sP=document.getElementById("sec-pick"),sW=document.getElementById("sec-whl");
   [sR,sP,sW].forEach(s=>s.classList.add("hidden"));
 
   if(r.phase==="rps"){
     sR.classList.remove("hidden");
-    const myC=r.rps[G.myId==="p1"?"p1c":"p2c"],oppC=r.rps[G.myId==="p1"?"p2c":"p1c"];
-    document.getElementById("rz-mn").textContent=myN;
-    document.getElementById("rz-on").textContent=oppN;
-    document.getElementById("rz-mw").textContent=r.rps.wins[G.myId]||0;
-    document.getElementById("rz-ow").textContent=r.rps.wins[opp]||0;
-    document.getElementById("rz-me").textContent=myC?EMOJ[myC]:"🤜";
-    document.getElementById("rz-oe").textContent=(myC&&oppC)?EMOJ[oppC]:oppC?"🤔":"🤛";
+    const myC = isSpec ? r.rps.p1c : r.rps[G.myId==="p1"?"p1c":"p2c"];
+    const oppC = isSpec ? r.rps.p2c : r.rps[G.myId==="p1"?"p2c":"p1c"];
+    document.getElementById("rz-mn").textContent = myN;
+    document.getElementById("rz-on").textContent = oppN;
+    document.getElementById("rz-mw").textContent = r.rps.wins[myId]||0;
+    document.getElementById("rz-ow").textContent = r.rps.wins[opp]||0;
+    document.getElementById("rz-me").innerHTML = myC ? emojiFor(myC) : "✊";
+    document.getElementById("rz-oe").innerHTML = (myC && oppC) ? emojiFor(oppC) : (oppC ? "🤔" : "✊");
     const bar=document.getElementById("rps-bar"); bar.className="sbar";
     const res=r.rps.result;
-    if(!myC) bar.textContent="Choose your move!";
+    if(isSpec){
+      if(!r.rps.p1c && !r.rps.p2c) bar.textContent="Both players choosing…";
+      else if(r.rps.p1c && r.rps.p2c) bar.textContent="Resolving…";
+      else bar.textContent="One player has chosen…";
+    } else if(!myC) bar.textContent="Choose your move!";
     else if(!oppC) bar.textContent="⏳ Waiting for "+oppN+"…";
     else if(res==="draw"){bar.textContent="It's a tie! Play again.";bar.classList.add("draw");}
     else if(res===G.myId){bar.textContent="You win this round! 🎉";bar.classList.add("win");}
     else{bar.textContent=oppN+" wins this round!";bar.classList.add("lose");}
+    document.getElementById("rps-choices").classList.toggle("hidden", isSpec);
     document.querySelectorAll(".rps-btn").forEach(b=>{
-      b.disabled=!!myC; b.classList.remove("chosen");
-      if(myC&&b.getAttribute("onclick").includes("'"+myC+"'")) b.classList.add("chosen");
+      b.disabled = isSpec || !!myC;
+      b.classList.remove("chosen");
+      if(myC && b.getAttribute("onclick").includes("'"+myC+"'")) b.classList.add("chosen");
     });
   }
 
   if(r.phase==="pick"){
     sP.classList.remove("hidden");
-    const iWon=r.rpsWinner===G.myId;
-    document.getElementById("pick-ttl").textContent=iWon?"🏆 You won! Who spins today?":oppN+" won!";
-    document.getElementById("pick-sub").textContent=iWon?"You choose who faces the wheel":"Waiting for them to decide…";
+    const iWon = !isSpec && r.rpsWinner===G.myId;
+    const winnerName = r.rpsWinner==="p1" ? r.p1 : r.p2;
+    document.getElementById("pick-ttl").textContent = isSpec
+      ? "🏆 " + winnerName + " won — choosing spinner…"
+      : (iWon ? "🏆 You won! Who spins today?" : oppN+" won!");
+    document.getElementById("pick-sub").textContent = isSpec
+      ? "Watching " + winnerName + " decide…"
+      : (iWon ? "You choose who faces the wheel" : "Waiting for them to decide…");
     const bd=document.getElementById("pick-btns"); bd.innerHTML="";
     if(iWon){
       [{id:G.myId,name:myN},{id:opp,name:oppN}].forEach(p=>{
@@ -698,14 +1135,14 @@ function renderGame(){
         b.textContent=p.name+" spins"; b.onclick=()=>pickSpinner(p.id); bd.appendChild(b);
       });
     } else {
-      bd.innerHTML='<div class="pw"><div class="pdot"></div>Waiting for '+oppN+'…</div>';
+      bd.innerHTML='<div class="pw"><div class="pdot"></div>Waiting…</div>';
     }
   }
 
   if(r.phase==="wheel"||r.phase==="done"){
     sW.classList.remove("hidden");
-    const spinN=r.spinner===G.myId?myN:oppN;
-    document.getElementById("whl-who").textContent=iSpin?"Your turn to spin!":spinN+" is spinning…";
+    const spinN = r.spinner==="p1" ? r.p1 : r.p2;
+    document.getElementById("whl-who").textContent = iSpin ? "Your turn to spin!" : spinN+" is spinning…";
     [0,1,2].forEach(i=>{
       const p=document.getElementById("pip"+i); p.className="pip";
       if(i<r.spins) p.classList.add("done");
@@ -714,9 +1151,10 @@ function renderGame(){
     const rw=document.getElementById("res-wrap");
     if(r.lastAmt!==null && r.lastAmt!==undefined){
       rw.classList.remove("hidden");
-      document.getElementById("res-amt").textContent="£"+(r.lastAmt||"?");
-      document.getElementById("res-plr").textContent=spinN;
-      document.getElementById("res-tot").textContent="Total so far: £"+(r.spinner===G.myId?myS:oppS);
+      document.getElementById("res-amt").textContent = fmtMoney(r.lastAmt);
+      document.getElementById("res-plr").textContent = spinN;
+      const totFor = r.score[r.spinner]||0;
+      document.getElementById("res-tot").textContent = "Total so far: " + fmtMoney(totFor);
     } else rw.classList.add("hidden");
     const obs=document.getElementById("obs-note");
     if(!iSpin&&r.phase==="wheel"){obs.classList.remove("hidden");obs.textContent="👀 Watching "+spinN+" spin…";}
@@ -727,7 +1165,7 @@ function renderGame(){
       sb.disabled = isSpinning || spinLock;
       sb.textContent=r.spins===0?"Spin the Wheel ✨":"Spin Again ("+(3-r.spins)+" left) ✨";
     } else sb.classList.add("hidden");
-    if(r.phase==="done") nd.classList.remove("hidden"); else nd.classList.add("hidden");
+    if(r.phase==="done" && !isSpec) nd.classList.remove("hidden"); else nd.classList.add("hidden");
     drawWheel(wheelRot);
   }
 }
@@ -735,20 +1173,28 @@ function renderGame(){
 // ── Summary ───────────────────────────────────────────────────────────
 function showSummary(){
   const r=normalizeRoom(G.room); if(!r) return;
-  const opp=G.myId==="p1"?"p2":"p1";
-  const myN=G.myName,oppN=G.myId==="p1"?r.p2:r.p1;
+  const isSpec = G.myId==="spectator";
+  const myId = isSpec ? "p1" : G.myId;
+  const opp = myId==="p1"?"p2":"p1";
+  const myN = isSpec ? r.p1 : G.myName;
+  const oppN = isSpec ? r.p2 : (G.myId==="p1"?r.p2:r.p1);
   const hist=r.history;
   const players=[
-    {id:G.myId,name:myN, score:r.score[G.myId]||0,spins:hist.filter(h=>h.who===G.myId).length},
-    {id:opp,   name:oppN,score:r.score[opp]||0,   spins:hist.filter(h=>h.who===opp).length},
+    {id:myId, name:myN, score:r.score[myId]||0, spins:hist.filter(h=>h.who===myId).length},
+    {id:opp,  name:oppN,score:r.score[opp]||0,  spins:hist.filter(h=>h.who===opp).length},
   ].sort((a,b)=>b.score-a.score);
   const re=document.getElementById("sum-rows"); re.innerHTML="";
   players.forEach((p,i)=>{
     const d=document.createElement("div"); d.className="sum-row"; d.style.animationDelay=i*.1+"s";
-    d.innerHTML='<div class="srank">'+["①","②"][i]+'</div><div class="sinfo"><div class="sname">'+p.name+(p.id===G.myId?" (you)":"")+'</div><div class="sdet">'+p.spins+' spin'+(p.spins!==1?"s":"")+" · Day"+(r.day>1?"s":"")+' 1–'+r.day+'</div></div><div class="samt">£'+p.score+'</div>';
+    const youTag = (!isSpec && p.id===G.myId) ? " (you)" : "";
+    d.innerHTML='<div class="srank">'+["①","②"][i]+'</div><div class="sinfo"><div class="sname">'+p.name+youTag+'</div><div class="sdet">'+p.spins+' spin'+(p.spins!==1?"s":"")+" · Day"+(r.day>1?"s":"")+' 1–'+r.day+'</div></div><div class="samt">'+fmtMoney(p.score)+'</div>';
     re.appendChild(d);
   });
-  document.getElementById("sum-total").textContent="£"+((r.score.p1||0)+(r.score.p2||0));
+  document.getElementById("sum-total").textContent = fmtMoney((r.score.p1||0)+(r.score.p2||0));
+  const meta = document.getElementById("sum-meta");
+  const days = r.day || 1;
+  const first = r.firstPlayedAt ? new Date(r.firstPlayedAt).toLocaleDateString() : "—";
+  meta.textContent = "Room "+G.code+" · "+r.currency.code+" · "+days+" day"+(days!==1?"s":"")+" · since "+first;
   const he=document.getElementById("sum-hist"); he.innerHTML="";
   if(hist.length>0){
     const lbl=document.createElement("div");
@@ -756,7 +1202,8 @@ function showSummary(){
     lbl.textContent="Spin History"; he.appendChild(lbl);
     hist.forEach(h=>{
       const d=document.createElement("div"); d.className="hrow";
-      d.innerHTML='<span class="hday">Day '+h.day+'</span><span>'+(h.who===G.myId?myN:oppN)+'</span><span class="hamt">£'+h.amt+'</span>';
+      const who = h.who==="p1" ? r.p1 : r.p2;
+      d.innerHTML='<span class="hday">Day '+h.day+'</span><span>'+who+'</span><span class="hamt">'+fmtMoney(h.amt)+'</span>';
       he.appendChild(d);
     });
   }
@@ -765,19 +1212,23 @@ function showSummary(){
 
 function backToGame(){show("s-game");renderGame();}
 
-function newGame(){
-  if(!confirm("Start a brand new game? All scores will be reset.")) return;
+function leaveRoom(){
   stopPolling();
-  // Clean up the old room in Firebase so the code can be reused without stale data
-  if(G.code) {
-    fetch(`${FIREBASE_URL}/rooms/${G.code}.json`,{method:"DELETE"}).catch(()=>{});
-  }
-  G={myId:"",myName:"",code:"",room:null,lastV:0};
+  G={myId:"",myName:"",code:"",room:null,lastV:0,rpsModalActive:false};
   _lastSeenSpinKey="";
+  _lastRpsKey="";
   wheelRot=0; isSpinning=false; drawWheel(0);
-  document.getElementById("inp-name").value="";
-  document.getElementById("inp-code").value="";
+  renderRecent();
   show("s-home");
+}
+
+async function resetRoom(){
+  if(G.myId==="spectator"){ toast("Spectators can't reset the room"); return; }
+  if(!confirm("⚠️ Permanently delete this room's data?\nAll scores and history will be lost.")) return;
+  const code = G.code;
+  await dbDelete(code);
+  toast("Room "+code+" was reset");
+  leaveRoom();
 }
 
 // ── Confetti ──────────────────────────────────────────────────────────
@@ -793,17 +1244,23 @@ function spawnConfetti(){
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────
+buildCurrencyPicker();
+renderRecent();
 drawWheel(0);
-const _urlRoom=new URLSearchParams(location.search).get("room");
+
+const _urlRoom = new URLSearchParams(location.search).get("room");
 if(_urlRoom){
-  const c=_urlRoom.toUpperCase().replace(/[^A-Z]/g,"").slice(0,4);
-  document.getElementById("inp-code").value=c;
-  // Hide the "create" half — this person is joining, not hosting
-  document.getElementById("btn-create").classList.add("hidden");
-  document.getElementById("home-or").classList.add("hidden");
-  document.getElementById("home-sub").textContent="You've been invited! Enter your name below to join room "+c+".";
+  const c = sanitizeCode(_urlRoom);
+  document.getElementById("inp-code").value = c;
+  document.getElementById("home-sub").textContent = "You've been invited to room "+c+". Enter your name and tap Enter Room.";
   setTimeout(()=>document.getElementById("inp-name").focus(), 300);
 }
+
+// expose for tests
+window.__GP = {
+  CURRENCIES, fmtMoney, genCode, sanitizeCode, mkRoom, normalizeRoom,
+  SEGS, BEATS, calcSpinEnd, NSEG, SA, getCurrencyByCode
+};
 </script>
 </body>
 </html>
