@@ -289,9 +289,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this name with your companion</div>
     </div>
     <div class="card col" style="gap:13px;text-align:center">
-      <div class="copy-link" id="lob-link" onclick="copyLink()">📋 Tap to copy invite link</div>
+      <div id="lob-link" style="font-size:12px;color:rgba(244,237,213,.45);word-break:break-all;line-height:1.6;padding:4px 2px"></div>
+      <div class="row" style="justify-content:center;gap:9px">
+        <button class="btn btn-ghost" onclick="copyLink()">📋 Copy Link</button>
+        <button class="btn btn-gold" onclick="enterGameRoom()">Enter Room →</button>
+      </div>
       <div style="height:1px;background:rgba(212,168,67,.1)"></div>
-      <div class="pw"><div class="pdot"></div>Waiting for companion to join…</div>
+      <div class="pw" id="lob-wait"><div class="pdot"></div>Waiting for companion to join…</div>
       <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()" style="margin-top:4px">← Leave Room</button>
     </div>
   </div>
@@ -961,7 +965,7 @@ async function enterRoom(){
       saveRecent(code, "p1", name);
       document.getElementById("lob-code").textContent = code;
       const link = location.origin + location.pathname + "?room=" + code;
-      document.getElementById("lob-link").textContent = "📋 " + link;
+      document.getElementById("lob-link").textContent = link;
       show("s-lobby");
       if(!ok) toast("⚠️ No internet sync — works on this device only.");
       startPolling(code);
@@ -1029,6 +1033,11 @@ function copyLink(){
   }
 }
 
+function enterGameRoom(){
+  show("s-game");
+  renderGame();
+}
+
 // ── Remote sync ───────────────────────────────────────────────────────
 let _lastSeenSpinKey = "";
 let _lastRpsKey = ""; // "day-roundsPlayed" — detects new RPS reveals
@@ -1043,10 +1052,11 @@ function rpsRevealKey(d){
 function onRemoteUpdate(data, prev){
   const cur=document.querySelector(".screen.active")?.id;
 
-  // Lobby → game transition (host sees opponent join)
+  // Lobby — notify host when companion joins, but don't auto-navigate
   if(cur==="s-lobby" && data.p2 && data.p1===G.myName){
-    toast("🎉 "+data.p2+" joined! Starting…");
-    setTimeout(()=>{show("s-game");renderGame();},1200);
+    const waitEl = document.getElementById("lob-wait");
+    if(waitEl) waitEl.innerHTML = '<span style="color:#4ECDC4">🎉 '+data.p2+' joined! Tap Enter Room to start.</span>';
+    toast("🎉 "+data.p2+" joined!");
     return;
   }
 
