@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Giving Pot ✈</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{min-height:100%;font-family:'Outfit',sans-serif;background:#08030F;color:#F4EDD5;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:-1;
+  background:radial-gradient(ellipse 80% 55% at 15% 5%,rgba(28,10,58,.85) 0%,transparent 55%),
+             radial-gradient(ellipse 60% 45% at 88% 95%,rgba(10,100,90,.2) 0%,transparent 55%),#08030F}
+.serif{font-family:'Cormorant Garamond',serif}
+.gt{font-family:'Cormorant Garamond',serif;font-weight:700;
+  background:linear-gradient(140deg,#EEC85A 0%,#C99828 55%,#7A5010 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ey{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#D4A843;margin-bottom:6px}
+.screen{display:none;min-height:100dvh;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px}
+.screen.active{display:flex}
+.col{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px}
+.row{display:flex;gap:10px}
+.card{background:rgba(255,255,255,.055);border:1px solid rgba(212,168,67,.22);border-radius:18px;padding:22px 18px;width:100%;max-width:400px}
+input[type=text],select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.22);border-radius:10px;
+  padding:12px 15px;color:#F4EDD5;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;appearance:none}
+input[type=text]:focus,select:focus{border-color:#D4A843}
+input[type=text]::placeholder{color:rgba(244,237,213,.3)}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23D4A843' d='M6 8L0 0h12z'/></svg>");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
+select option{background:#08030F;color:#F4EDD5}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 22px;border-radius:50px;
+  border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;
+  transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn-gold{background:linear-gradient(135deg,#EEC85A,#C89820);color:#08030F;font-weight:600;box-shadow:0 4px 18px rgba(212,168,67,.35)}
+.btn-teal{background:linear-gradient(135deg,#12B094,#0A7A68);color:#fff;box-shadow:0 4px 18px rgba(18,176,148,.3)}
+.btn-ghost{background:transparent;border:1px solid rgba(212,168,67,.32);color:#D4A843}
+.btn-danger{background:transparent;border:1px solid rgba(192,40,40,.5);color:#e56b74}
+.btn-full{width:100%}
+.btn-tiny{padding:6px 12px;font-size:12px}
+.or-div{display:flex;align-items:center;gap:12px;color:rgba(244,237,213,.3);font-size:11px}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:rgba(212,168,67,.15)}
+.badges{display:flex;gap:9px;width:100%;max-width:400px}
+.badge{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.14);border-radius:12px;padding:10px 13px;text-align:center}
+.badge.me{background:rgba(212,168,67,.07);border-color:rgba(212,168,67,.4)}
+.badge-name{font-size:11px;font-weight:500;margin-bottom:2px}
+.badge-score{font-family:'Cormorant Garamond',serif;font-size:22px;color:#EEC85A}
+.spec-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:#7A5010;background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.25);
+  padding:4px 10px;border-radius:50px}
+.room-code{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(38px,11vw,58px);
+  letter-spacing:6px;background:linear-gradient(135deg,#EEC85A,#C89820);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;text-align:center;word-break:break-all}
+.copy-link{background:rgba(255,255,255,.04);border:1px dashed rgba(212,168,67,.3);border-radius:10px;
+  padding:11px 14px;font-size:12px;color:rgba(244,237,213,.45);cursor:pointer;text-align:center;
+  word-break:break-all;transition:background .2s;line-height:1.6}
+.copy-link:hover{background:rgba(212,168,67,.08)}
+.pw{display:flex;align-items:center;gap:9px;justify-content:center;font-size:13px;color:rgba(244,237,213,.45)}
+.pdot{width:8px;height:8px;border-radius:50%;background:#12B094;animation:blink 1.3s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:.25;transform:scale(.75)}50%{opacity:1;transform:scale(1.15)}}
+.rps-grid{display:grid;grid-template-columns:1fr 28px 1fr;gap:8px;align-items:center;width:100%;max-width:400px}
+.rps-zone{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.14);border-radius:14px;
+  padding:16px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:7px;min-height:118px}
+.rps-zone.me{background:rgba(212,168,67,.06);border-color:rgba(212,168,67,.4)}
+.rzn{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#D4A843}
+.rze{font-size:42px;min-height:50px;display:flex;align-items:center;justify-content:center}
+.rzs{font-family:'Cormorant Garamond',serif;font-size:26px;color:#EEC85A}
+.rps-vs{font-family:'Cormorant Garamond',serif;font-size:17px;color:rgba(244,237,213,.28);text-align:center}
+.rps-choices{display:flex;gap:9px;width:100%;max-width:400px}
+.rps-btn{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(212,168,67,.18);border-radius:13px;
+  padding:14px 6px;cursor:pointer;font-size:26px;display:flex;flex-direction:column;
+  align-items:center;gap:4px;color:#F4EDD5;transition:all .15s}
+.rps-btn:hover{background:rgba(212,168,67,.15);border-color:#D4A843;transform:scale(1.05)}
+.rps-btn.chosen{border-color:#D4A843;background:rgba(212,168,67,.2)}
+.rps-btn:disabled{opacity:.4;pointer-events:none}
+.rps-btn span{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#D4A843;font-family:'Outfit',sans-serif}
+.rock-icon{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;
+  border-radius:50%;background:linear-gradient(135deg,#7d6650,#3d3025);
+  box-shadow:inset -3px -3px 6px rgba(0,0,0,.5),inset 3px 3px 6px rgba(255,255,255,.15),0 2px 6px rgba(0,0,0,.3);
+  position:relative}
+.rock-icon::before{content:'';position:absolute;width:5px;height:4px;border-radius:50%;
+  background:rgba(0,0,0,.35);top:9px;left:8px}
+.rock-icon::after{content:'';position:absolute;width:4px;height:3px;border-radius:50%;
+  background:rgba(255,255,255,.15);top:8px;right:9px}
+.rock-icon.lg{width:60px;height:60px}
+.rock-icon.lg::before{width:9px;height:7px;top:16px;left:14px}
+.rock-icon.lg::after{width:7px;height:5px;top:14px;right:16px}
+.sbar{width:100%;max-width:400px;border-radius:10px;padding:11px 14px;text-align:center;
+  font-size:13px;border:1px solid rgba(212,168,67,.15);background:rgba(255,255,255,.04);
+  color:rgba(244,237,213,.45);min-height:44px;display:flex;align-items:center;justify-content:center}
+.sbar.win{background:rgba(18,176,148,.1);border-color:rgba(18,176,148,.28);color:#4ECDC4}
+.sbar.lose{background:rgba(192,40,40,.1);border-color:rgba(192,40,40,.25);color:#e56b74}
+.sbar.draw{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.28);color:#D4A843}
+.wheel-wrap{position:relative;width:min(280px,82vw);height:min(280px,82vw)}
+.wptr{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:11px solid transparent;border-right:11px solid transparent;border-top:21px solid #D4A843;
+  filter:drop-shadow(0 3px 8px rgba(212,168,67,.75));z-index:5}
+#wCanvas{width:100%;height:100%;border-radius:50%;
+  box-shadow:0 0 0 5px rgba(212,168,67,.28),0 16px 50px rgba(0,0,0,.6)}
+.pips{display:flex;gap:7px;justify-content:center;margin-top:8px}
+.pip{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .3s}
+.pip.done{background:#0A7A68}
+.pip.now{background:#D4A843;box-shadow:0 0 8px #D4A843}
+.spin-result{background:linear-gradient(135deg,#100626,#081018);border:2px solid #D4A843;
+  border-radius:17px;padding:20px 26px;text-align:center;
+  box-shadow:0 0 44px rgba(212,168,67,.2);max-width:260px;width:100%;
+  animation:popin .4s cubic-bezier(.34,1.56,.64,1)}
+.rl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,237,213,.4);margin-bottom:3px}
+.ra{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.rp{font-size:14px;color:#F4EDD5;margin-top:3px}
+.rt{font-size:11px;color:rgba(244,237,213,.38);margin-top:5px}
+.sum-row{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.055);
+  border:1px solid rgba(212,168,67,.2);border-radius:14px;padding:14px 17px;
+  width:100%;max-width:400px;animation:slideup .35s ease both}
+.srank{font-family:'Cormorant Garamond',serif;font-size:24px;color:rgba(244,237,213,.2);width:22px}
+.sinfo{flex:1}
+.sname{font-size:14px}
+.sdet{font-size:11px;color:rgba(244,237,213,.38);margin-top:2px}
+.samt{font-family:'Cormorant Garamond',serif;font-size:24px;color:#EEC85A}
+.tbox{width:100%;max-width:400px;background:rgba(212,168,67,.07);border:1px solid rgba(212,168,67,.26);
+  border-radius:14px;padding:18px;text-align:center}
+.tlbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#D4A843;margin-bottom:3px}
+.tamt{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.hrow{display:flex;gap:12px;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:13px;color:rgba(244,237,213,.52)}
+.hday{color:#D4A843;min-width:46px;font-weight:500}
+.hamt{margin-left:auto;font-family:'Cormorant Garamond',serif;font-size:15px;color:#EEC85A}
+.pick-card{width:100%;max-width:400px;text-align:center;background:rgba(255,255,255,.055);
+  border:1px solid rgba(212,168,67,.2);border-radius:16px;padding:20px 18px}
+.obs{font-size:12px;color:rgba(244,237,213,.38);text-align:center;padding:9px 14px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(212,168,67,.1);border-radius:8px;
+  max-width:400px;width:100%}
+.recent-room{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.15);border-radius:10px;
+  padding:9px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;transition:all .15s}
+.recent-room:hover{background:rgba(212,168,67,.08);border-color:#D4A843}
+.recent-room .rcode{font-family:'Cormorant Garamond',serif;font-size:18px;color:#EEC85A;font-weight:600;letter-spacing:2px}
+.recent-room .rrole{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(244,237,213,.4);margin-left:auto}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:rgba(8,3,15,.96);border:1px solid rgba(212,168,67,.25);border-radius:50px;
+  padding:9px 20px;font-size:13px;color:#F4EDD5;pointer-events:none;white-space:nowrap;
+  opacity:0;transition:opacity .25s;z-index:9998}
+#toast.show{opacity:1}
+.cf{position:fixed;border-radius:2px;pointer-events:none;z-index:9999;animation:cfall linear forwards}
+@keyframes cfall{from{transform:translateY(-8px) rotate(0);opacity:1}to{transform:translateY(110vh) rotate(540deg);opacity:0}}
+@keyframes popin{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes slideup{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hidden{display:none!important}
+
+/* ── Budget milestone track ─────────────────────────────────────── */
+.budget-track{width:100%;max-width:400px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(212,168,67,.2);border-radius:14px;padding:14px 16px}
+.bt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.bt-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#D4A843}
+.bt-amounts{font-family:'Cormorant Garamond',serif;font-size:14px;color:#EEC85A}
+.bt-bar-bg{width:100%;height:10px;background:rgba(255,255,255,.08);border-radius:8px;overflow:hidden}
+.bt-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#0A7A68,#D4A843);
+  transition:width .7s cubic-bezier(.34,1.56,.64,1);min-width:2px;max-width:100%}
+.bt-milestones{display:flex;justify-content:space-between;margin-top:8px;padding:0 2px}
+.bt-ms{font-size:18px;transition:transform .3s,opacity .3s;opacity:.28;line-height:1}
+.bt-ms.reached{opacity:1;animation:mspopin .45s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes mspopin{0%{transform:scale(.5)}100%{transform:scale(1)}}
+input[type=number]{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.22);
+  border-radius:10px;padding:12px 15px;color:#F4EDD5;font-family:'Outfit',sans-serif;font-size:15px;
+  outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input[type=number]:focus{border-color:#D4A843}
+input[type=number]::placeholder{color:rgba(244,237,213,.3)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+/* ── Pot select modal ───────────────────────────────────────────── */
+.pot-winner-badge{display:inline-block;padding:4px 12px;border-radius:50px;
+  background:rgba(18,176,148,.15);border:1px solid rgba(18,176,148,.3);
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4ECDC4;margin-bottom:10px}
+/* ── Round summary pot rows ─────────────────────────────────────── */
+.round-pot-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(212,168,67,.15);
+  border-radius:12px;margin-bottom:8px}
+.round-pot-name{font-size:14px;font-weight:500}
+.round-pot-you{font-size:10px;letter-spacing:1px;color:rgba(244,237,213,.38)}
+.round-pot-amt{font-family:'Cormorant Garamond',serif;font-size:24px;color:#EEC85A}
+/* ── Congrats modal ─────────────────────────────────────────────── */
+.congrats-emoji{font-size:52px;display:block;margin:6px 0 10px;line-height:1;text-align:center}
+
+/* ── Modals ───────────────────────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(4,1,10,.78);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:9000;padding:18px;
+  animation:fadein .25s ease}
+.modal-bg.show{display:flex}
+.modal-card{background:linear-gradient(160deg,#140828,#0a0418);
+  border:1px solid rgba(212,168,67,.32);border-radius:20px;padding:24px 22px;
+  width:100%;max-width:380px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.7);
+  animation:popin .35s cubic-bezier(.34,1.56,.64,1)}
+.modal-ttl{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;
+  background:linear-gradient(135deg,#EEC85A,#C89820);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.modal-sub{font-size:13px;color:rgba(244,237,213,.55);margin-bottom:18px;line-height:1.5}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+
+/* RPS reveal modal */
+.rps-reveal{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0 18px}
+.rps-side{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.rps-side .hand{font-size:64px;line-height:1;animation:popin .4s cubic-bezier(.34,1.56,.64,1)}
+.rps-side .nm{font-size:12px;color:rgba(244,237,213,.6)}
+.rps-vs-big{font-family:'Cormorant Garamond',serif;font-size:22px;color:rgba(244,237,213,.32)}
+.rps-banner{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:14px}
+.rps-banner.win{color:#4ECDC4}
+.rps-banner.lose{color:#e56b74}
+.rps-banner.draw{color:#D4A843}
+.cd-wrap{position:relative;width:74px;height:74px;margin:0 auto}
+.cd-wrap svg{transform:rotate(-90deg)}
+.cd-wrap .cd-bg{fill:none;stroke:rgba(212,168,67,.18);stroke-width:6}
+.cd-wrap .cd-fg{fill:none;stroke:#EEC85A;stroke-width:6;stroke-linecap:round;
+  transition:stroke-dashoffset 1s linear}
+.cd-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:#EEC85A}
+.cd-hint{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,237,213,.32);margin-top:8px}
+
+/* Claim modal slot buttons */
+.claim-slot{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(212,168,67,.2);border-radius:12px;padding:13px 16px;cursor:pointer;
+  font-size:14px;color:#F4EDD5;text-align:left;width:100%;margin-bottom:9px;transition:all .15s}
+.claim-slot:hover{background:rgba(212,168,67,.1);border-color:#D4A843}
+.claim-slot .pn{font-weight:600;flex:1}
+.claim-slot .pr{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#D4A843}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="s-home" class="screen active">
+  <div class="col" style="align-items:center;gap:20px">
+    <div style="text-align:center">
+      <div class="ey">✈ Generous Travellers</div>
+      <div class="gt" style="font-size:clamp(38px,10vw,58px);line-height:1.05">The<br>Giving Pot</div>
+      <div id="home-sub" style="font-size:13px;color:rgba(244,237,213,.48);line-height:1.7;max-width:280px;margin:8px auto 0">
+        Spin the wheel to fairly decide how much each generous soul chips in.
+      </div>
+    </div>
+
+    <!-- Step 1: Identify yourself -->
+    <div class="card col" id="home-step1-card" style="gap:14px;text-align:center">
+      <div style="font-size:13px;color:rgba(244,237,213,.55);line-height:1.5">Who's joining today?</div>
+      <input type="text" id="inp-name" placeholder="Your name" maxlength="18" autocomplete="off"
+        onkeydown="if(event.key==='Enter')findMyRooms()">
+      <button class="btn btn-gold btn-full" id="btn-find" onclick="findMyRooms()">Find My Rooms →</button>
+    </div>
+
+    <!-- Step 2: Room selection (hidden until name entered) -->
+    <div id="home-step2" class="col hidden" style="gap:12px;width:100%;max-width:400px">
+      <div id="my-rooms-wrap" class="col hidden" style="gap:6px">
+        <div class="ey" style="text-align:center">Your Rooms</div>
+        <div id="my-rooms-list" class="col" style="gap:6px"></div>
+      </div>
+      <div class="or-div" id="rooms-or-div">New Room or Join Existing</div>
+      <div class="card col" style="gap:11px">
+        <div class="row" style="gap:8px">
+          <input type="text" id="inp-code" placeholder="ROOM NAME" maxlength="12"
+            style="flex:1;letter-spacing:3px;text-align:center;text-transform:uppercase" autocomplete="off"
+            oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
+            onkeydown="if(event.key==='Enter')enterRoom()">
+          <button class="btn btn-ghost btn-tiny" onclick="suggestCode()" title="Suggest a random room name">🎲</button>
+        </div>
+        <input type="number" id="inp-budget" placeholder="Budget target (e.g. 2000) — for new rooms" min="0" autocomplete="off">
+        <select id="inp-currency" title="Currency for new rooms (existing rooms keep their currency)"></select>
+        <button class="btn btn-gold btn-full" id="btn-enter" onclick="enterRoom()">Enter Room →</button>
+      </div>
+      <button class="btn btn-ghost btn-tiny" onclick="backToIdentify()" style="margin-top:2px">← Not you?</button>
+    </div>
+
+    <div id="home-footer" style="font-size:11px;color:rgba(244,237,213,.2);text-align:center;max-width:300px;line-height:1.6">
+      Persistent rooms — pick a name you'll remember.<br>Anyone with the room name can join or spectate.
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="s-lobby" class="screen">
+  <div class="col" style="align-items:center;gap:20px">
+    <div style="text-align:center">
+      <div class="ey">Your room name</div>
+      <div class="room-code" id="lob-code">----</div>
+      <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this name with your companion</div>
+    </div>
+    <div class="card col" style="gap:13px;text-align:center">
+      <div class="copy-link" id="lob-link" onclick="copyLink()">📋 Tap to copy invite link</div>
+      <div style="height:1px;background:rgba(212,168,67,.1)"></div>
+      <div class="pw"><div class="pdot"></div>Waiting for companion to join…</div>
+      <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()" style="margin-top:4px">← Leave Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="s-game" class="screen">
+  <div class="col" style="align-items:center;gap:12px">
+    <div class="badges">
+      <div class="badge me"><div class="badge-name" id="bme-n">You</div><div class="badge-score" id="bme-s">£0</div></div>
+      <div class="badge"><div class="badge-name" id="bopp-n">Opponent</div><div class="badge-score" id="bopp-s">£0</div></div>
+    </div>
+
+    <!-- Budget milestone track -->
+    <div id="budget-track-wrap" class="budget-track hidden">
+      <div class="bt-header">
+        <div class="bt-label">Budget Progress</div>
+        <div class="bt-amounts"><span id="bt-current">£0</span> / <span id="bt-target">£0</span></div>
+      </div>
+      <div class="bt-bar-bg"><div class="bt-bar-fill" id="bt-fill" style="width:0%"></div></div>
+      <div class="bt-milestones">
+        <div class="bt-ms" id="bt-ms0" title="25%">🌱</div>
+        <div class="bt-ms" id="bt-ms1" title="50%">🌿</div>
+        <div class="bt-ms" id="bt-ms2" title="75%">🌳</div>
+        <div class="bt-ms" id="bt-ms3" title="100%">✈️</div>
+        <div class="bt-ms" id="bt-ms4" title="Goal!">🎉</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div class="ey" id="day-lbl">Day 1</div>
+      <div id="spec-badge" class="spec-tag hidden">👁 Spectator</div>
+    </div>
+
+    <!-- RPS -->
+    <div id="sec-rps" class="col" style="align-items:center;gap:12px">
+      <div class="gt" style="font-size:clamp(24px,6vw,38px);line-height:1.1;text-align:center">Rock · Paper<br>Scissors</div>
+      <div class="rps-grid">
+        <div class="rps-zone me">
+          <div class="rzn" id="rz-mn">Me</div>
+          <div class="rze" id="rz-me">✊</div>
+          <div class="rzs" id="rz-mw">0</div>
+        </div>
+        <div class="rps-vs">vs</div>
+        <div class="rps-zone">
+          <div class="rzn" id="rz-on">Opp</div>
+          <div class="rze" id="rz-oe">✊</div>
+          <div class="rzs" id="rz-ow">0</div>
+        </div>
+      </div>
+      <div class="sbar" id="rps-bar">Choose your move!</div>
+      <div class="rps-choices" id="rps-choices">
+        <button class="rps-btn" onclick="castRPS('rock')"><span class="rock-icon"></span><span>Rock</span></button>
+        <button class="rps-btn" onclick="castRPS('paper')">📄<span>Paper</span></button>
+        <button class="rps-btn" onclick="castRPS('scissors')">✂️<span>Scissors</span></button>
+      </div>
+    </div>
+
+    <!-- WHEEL -->
+    <div id="sec-whl" class="col hidden" style="align-items:center;gap:12px">
+      <div style="text-align:center">
+        <div class="serif" style="font-size:clamp(18px,4vw,26px);color:#EEC85A;font-weight:600" id="whl-who">Spinning…</div>
+        <div class="pips">
+          <div class="pip now" id="pip0"></div>
+          <div class="pip" id="pip1"></div>
+          <div class="pip" id="pip2"></div>
+        </div>
+      </div>
+      <div class="wheel-wrap">
+        <div class="wptr"></div>
+        <canvas id="wCanvas" width="280" height="280"></canvas>
+      </div>
+      <div id="res-wrap" class="hidden">
+        <div class="spin-result">
+          <div class="rl">Contribution</div>
+          <div class="ra" id="res-amt">£100</div>
+          <div class="rp" id="res-plr">Player</div>
+          <div class="rt" id="res-tot"></div>
+        </div>
+      </div>
+      <div class="obs hidden" id="obs-note"></div>
+      <div class="row" style="justify-content:center;flex-wrap:wrap;gap:9px">
+        <button class="btn btn-teal hidden" id="btn-spin" onclick="doSpin()">Spin the Wheel ✨</button>
+        <button class="btn btn-teal hidden" id="btn-next" onclick="nextDay()">Next Day →</button>
+        <button class="btn btn-ghost" onclick="showSummary()">View Summary</button>
+        <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()">← Leave</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div id="s-summary" class="screen">
+  <div class="col" style="align-items:center;gap:12px;padding-top:16px;padding-bottom:28px">
+    <div style="text-align:center">
+      <div class="ey">✈ Travel Fund</div>
+      <div class="gt" style="font-size:44px;line-height:1.05">The Pot</div>
+      <div id="sum-meta" style="font-size:11px;color:rgba(244,237,213,.32);margin-top:6px"></div>
+    </div>
+    <div id="sum-rows" class="col" style="gap:10px"></div>
+    <div class="tbox"><div class="tlbl">Total Trip Fund</div><div class="tamt" id="sum-total">£0</div></div>
+    <div id="sum-hist" class="col" style="gap:0;width:100%;max-width:400px"></div>
+    <div class="row" style="justify-content:center;flex-wrap:wrap;gap:9px;margin-top:8px">
+      <button class="btn btn-teal" onclick="backToGame()">Back to Game</button>
+      <button class="btn btn-ghost" onclick="leaveRoom()">Leave Room</button>
+      <button class="btn btn-danger" onclick="resetRoom()">Reset Room</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RPS REVEAL MODAL ─────────────────────────────────────────── -->
+<div id="modal-rps" class="modal-bg" onclick="dismissRpsModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-ttl">Round Result</div>
+    <div class="rps-reveal">
+      <div class="rps-side">
+        <div class="hand" id="rpsm-h1">✊</div>
+        <div class="nm" id="rpsm-n1">P1</div>
+      </div>
+      <div class="rps-vs-big">vs</div>
+      <div class="rps-side">
+        <div class="hand" id="rpsm-h2">✊</div>
+        <div class="nm" id="rpsm-n2">P2</div>
+      </div>
+    </div>
+    <div class="rps-banner" id="rpsm-banner">Draw</div>
+    <div class="cd-wrap">
+      <svg width="74" height="74" viewBox="0 0 74 74">
+        <circle class="cd-bg" cx="37" cy="37" r="32"></circle>
+        <circle class="cd-fg" id="cd-ring" cx="37" cy="37" r="32"
+          stroke-dasharray="201" stroke-dashoffset="0"></circle>
+      </svg>
+      <div class="cd-num" id="cd-num">5</div>
+    </div>
+    <div class="cd-hint">Tap outside or press Esc to skip</div>
+  </div>
+</div>
+
+<!-- ── CLAIM SLOT MODAL ─────────────────────────────────────────── -->
+<div id="modal-claim" class="modal-bg">
+  <div class="modal-card">
+    <div class="modal-ttl">Pick a Slot</div>
+    <div class="modal-sub" id="claim-sub">This room is full. Who are you?</div>
+    <button class="claim-slot" id="claim-p1" onclick="doClaim('p1')">
+      <div class="pn" id="claim-p1n">Alice</div><div class="pr">Claim P1</div>
+    </button>
+    <button class="claim-slot" id="claim-p2" onclick="doClaim('p2')">
+      <div class="pn" id="claim-p2n">Bob</div><div class="pr">Claim P2</div>
+    </button>
+    <button class="claim-slot" onclick="doClaim('spectator')">
+      <div class="pn">👁 Spectate</div><div class="pr">Watch only</div>
+    </button>
+    <button class="btn btn-ghost btn-full" style="margin-top:6px" onclick="closeModal('modal-claim');claimResolve&&claimResolve(null)">Cancel</button>
+  </div>
+</div>
+
+<!-- ── CONFIRM IDENTITY MODAL ───────────────────────────────────── -->
+<div id="modal-confirm" class="modal-bg">
+  <div class="modal-card">
+    <div class="modal-ttl" id="cfm-ttl">Continue?</div>
+    <div class="modal-sub" id="cfm-sub"></div>
+    <div class="row" style="justify-content:center;gap:9px">
+      <button class="btn btn-teal" onclick="cfmResolve(true)">Yes, continue</button>
+      <button class="btn btn-ghost" onclick="cfmResolve(false)">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── POT SELECTION MODAL ───────────────────────────────────────── -->
+<div id="modal-pot" class="modal-bg">
+  <div class="modal-card">
+    <div class="pot-winner-badge" id="pot-winner-badge">You won!</div>
+    <div class="modal-ttl">Spin <span id="pot-spin-num">1</span> of 3</div>
+    <div class="modal-sub">Whose pot gets this contribution?</div>
+    <button class="claim-slot" id="pot-btn-p1" onclick="selectPotTarget('p1')" style="margin-bottom:9px">
+      <div style="font-size:20px">🪴</div>
+      <div class="pn" id="pot-p1n" style="flex:1">Player 1</div>
+      <div class="pr">Their pot</div>
+    </button>
+    <button class="claim-slot" id="pot-btn-p2" onclick="selectPotTarget('p2')">
+      <div style="font-size:20px">🪴</div>
+      <div class="pn" id="pot-p2n" style="flex:1">Player 2</div>
+      <div class="pr">Their pot</div>
+    </button>
+  </div>
+</div>
+
+<!-- ── ROUND SUMMARY MODAL ───────────────────────────────────────── -->
+<div id="modal-round" class="modal-bg">
+  <div class="modal-card">
+    <div class="modal-ttl">Round Complete!</div>
+    <div class="modal-sub" id="round-day-lbl">Day 1 wrap-up</div>
+    <div id="round-pot-rows" style="width:100%;margin:14px 0 4px"></div>
+    <div class="budget-track" id="round-budget-section" style="margin-bottom:18px">
+      <div class="bt-header">
+        <div class="bt-label">Budget Progress</div>
+        <div class="bt-amounts"><span id="round-bt-current">£0</span> / <span id="round-bt-target">£0</span></div>
+      </div>
+      <div class="bt-bar-bg"><div class="bt-bar-fill" id="round-bt-fill" style="width:0%"></div></div>
+      <div class="bt-milestones">
+        <div class="bt-ms" id="round-ms0">🌱</div>
+        <div class="bt-ms" id="round-ms1">🌿</div>
+        <div class="bt-ms" id="round-ms2">🌳</div>
+        <div class="bt-ms" id="round-ms3">✈️</div>
+        <div class="bt-ms" id="round-ms4">🎉</div>
+      </div>
+    </div>
+    <button class="btn btn-gold btn-full" id="round-next-btn" onclick="proceedFromRoundSummary()">Next Day →</button>
+  </div>
+</div>
+
+<!-- ── CONGRATULATIONS MODAL ─────────────────────────────────────── -->
+<div id="modal-congrats" class="modal-bg">
+  <div class="modal-card">
+    <span class="congrats-emoji">🎉</span>
+    <div class="modal-ttl">Target Reached!</div>
+    <div class="modal-sub" id="congrats-msg">Congratulations! You have achieved your target!</div>
+    <div class="row" style="justify-content:center;gap:9px;margin-top:4px">
+      <button class="btn btn-gold" onclick="closeAndLockRoom()">Close &amp; Lock Room</button>
+      <button class="btn btn-ghost" onclick="continueAfterTarget()">Continue Playing</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+//  THE GIVING POT v4  —  Persistent rooms, multi-currency, spectators
+// ══════════════════════════════════════════════════════════════════════
+
+const FIREBASE_URL = "https://generouspot-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+// ── Currencies (ISO 4217) ─────────────────────────────────────────────
+const CURRENCIES = [
+  ["GBP","£","British Pound"],["USD","$","US Dollar"],["EUR","€","Euro"],
+  ["JPY","¥","Japanese Yen"],["CNY","¥","Chinese Yuan"],["INR","₹","Indian Rupee"],
+  ["MYR","RM","Malaysian Ringgit"],["SGD","S$","Singapore Dollar"],["AUD","A$","Australian Dollar"],
+  ["CAD","C$","Canadian Dollar"],["NZD","NZ$","New Zealand Dollar"],["HKD","HK$","Hong Kong Dollar"],
+  ["TWD","NT$","Taiwan Dollar"],["KRW","₩","South Korean Won"],["THB","฿","Thai Baht"],
+  ["VND","₫","Vietnamese Dong"],["IDR","Rp","Indonesian Rupiah"],["PHP","₱","Philippine Peso"],
+  ["AED","د.إ","UAE Dirham"],["SAR","ر.س","Saudi Riyal"],["QAR","ر.ق","Qatari Riyal"],
+  ["KWD","د.ك","Kuwaiti Dinar"],["BHD",".د.ب","Bahraini Dinar"],["OMR","ر.ع.","Omani Rial"],
+  ["JOD","د.ا","Jordanian Dinar"],["LBP","ل.ل","Lebanese Pound"],["EGP","E£","Egyptian Pound"],
+  ["ILS","₪","Israeli Shekel"],["TRY","₺","Turkish Lira"],["RUB","₽","Russian Ruble"],
+  ["UAH","₴","Ukrainian Hryvnia"],["PLN","zł","Polish Zloty"],["CZK","Kč","Czech Koruna"],
+  ["HUF","Ft","Hungarian Forint"],["RON","lei","Romanian Leu"],["BGN","лв","Bulgarian Lev"],
+  ["HRK","kn","Croatian Kuna"],["RSD","дин","Serbian Dinar"],["ISK","kr","Icelandic Krona"],
+  ["NOK","kr","Norwegian Krone"],["SEK","kr","Swedish Krona"],["DKK","kr","Danish Krone"],
+  ["CHF","CHF","Swiss Franc"],["MXN","Mex$","Mexican Peso"],["BRL","R$","Brazilian Real"],
+  ["ARS","AR$","Argentine Peso"],["CLP","CL$","Chilean Peso"],["COP","COL$","Colombian Peso"],
+  ["PEN","S/","Peruvian Sol"],["UYU","$U","Uruguayan Peso"],["VES","Bs.","Venezuelan Bolivar"],
+  ["BOB","Bs.","Bolivian Boliviano"],["PYG","₲","Paraguayan Guarani"],["DOP","RD$","Dominican Peso"],
+  ["CUP","₱","Cuban Peso"],["JMD","J$","Jamaican Dollar"],["TTD","TT$","Trinidad Dollar"],
+  ["BBD","Bds$","Barbadian Dollar"],["BSD","B$","Bahamian Dollar"],["XCD","EC$","East Caribbean Dollar"],
+  ["GTQ","Q","Guatemalan Quetzal"],["HNL","L","Honduran Lempira"],["NIO","C$","Nicaraguan Cordoba"],
+  ["CRC","₡","Costa Rican Colon"],["PAB","B/.","Panamanian Balboa"],["BZD","BZ$","Belize Dollar"],
+  ["ZAR","R","South African Rand"],["NGN","₦","Nigerian Naira"],["KES","KSh","Kenyan Shilling"],
+  ["UGX","USh","Ugandan Shilling"],["TZS","TSh","Tanzanian Shilling"],["RWF","FRw","Rwandan Franc"],
+  ["ETB","Br","Ethiopian Birr"],["GHS","₵","Ghanaian Cedi"],["XOF","CFA","West African Franc"],
+  ["XAF","FCFA","Central African Franc"],["MAD","د.م.","Moroccan Dirham"],["DZD","د.ج","Algerian Dinar"],
+  ["TND","د.ت","Tunisian Dinar"],["LYD","ل.د","Libyan Dinar"],["SDG","ج.س.","Sudanese Pound"],
+  ["MUR","₨","Mauritian Rupee"],["MGA","Ar","Malagasy Ariary"],["ZMW","ZK","Zambian Kwacha"],
+  ["BWP","P","Botswana Pula"],["NAD","N$","Namibian Dollar"],["MZN","MT","Mozambican Metical"],
+  ["AOA","Kz","Angolan Kwanza"],["CDF","FC","Congolese Franc"],["MWK","MK","Malawian Kwacha"],
+  ["LSL","L","Lesotho Loti"],["SZL","E","Swazi Lilangeni"],["BIF","FBu","Burundian Franc"],
+  ["DJF","Fdj","Djiboutian Franc"],["KMF","CF","Comorian Franc"],["SCR","₨","Seychelles Rupee"],
+  ["SOS","Sh","Somali Shilling"],["ERN","Nfk","Eritrean Nakfa"],["GMD","D","Gambian Dalasi"],
+  ["GNF","FG","Guinean Franc"],["LRD","L$","Liberian Dollar"],["SLL","Le","Sierra Leonean Leone"],
+  ["CVE","Esc","Cape Verdean Escudo"],["STN","Db","Sao Tome Dobra"],["MRU","UM","Mauritanian Ouguiya"],
+  ["PKR","₨","Pakistani Rupee"],["LKR","Rs","Sri Lankan Rupee"],["BDT","৳","Bangladeshi Taka"],
+  ["NPR","₨","Nepalese Rupee"],["BTN","Nu.","Bhutanese Ngultrum"],["MVR","Rf","Maldivian Rufiyaa"],
+  ["AFN","؋","Afghan Afghani"],["IRR","﷼","Iranian Rial"],["IQD","ع.د","Iraqi Dinar"],
+  ["SYP","£S","Syrian Pound"],["YER","﷼","Yemeni Rial"],["UZS","сум","Uzbek Som"],
+  ["KZT","₸","Kazakhstani Tenge"],["TMT","m","Turkmen Manat"],["TJS","SM","Tajik Somoni"],
+  ["KGS","с","Kyrgyz Som"],["MNT","₮","Mongolian Tugrik"],["LAK","₭","Lao Kip"],
+  ["KHR","៛","Cambodian Riel"],["MMK","K","Myanmar Kyat"],["BND","B$","Brunei Dollar"],
+  ["MOP","MOP$","Macanese Pataca"],["KPW","₩","North Korean Won"],["FJD","FJ$","Fijian Dollar"],
+  ["PGK","K","Papua New Guinea Kina"],["SBD","SI$","Solomon Islands Dollar"],["VUV","VT","Vanuatu Vatu"],
+  ["WST","WS$","Samoan Tala"],["TOP","T$","Tongan Pa'anga"],["XPF","CFP","CFP Franc"],
+  ["AMD","֏","Armenian Dram"],["AZN","₼","Azerbaijani Manat"],["GEL","₾","Georgian Lari"],
+  ["BYN","Br","Belarusian Ruble"],["MDL","L","Moldovan Leu"],["MKD","ден","Macedonian Denar"],
+  ["ALL","L","Albanian Lek"],["BAM","KM","Bosnia Mark"],["GIP","£","Gibraltar Pound"],
+  ["FKP","£","Falkland Pound"],["SHP","£","Saint Helena Pound"],["IMP","£","Manx Pound"],
+  ["JEP","£","Jersey Pound"],["GGP","£","Guernsey Pound"],["KYD","CI$","Cayman Dollar"],
+  ["BMD","BD$","Bermudian Dollar"],["AWG","ƒ","Aruban Florin"],["ANG","ƒ","Netherlands Antillean Guilder"],
+  ["SRD","Sr$","Surinamese Dollar"],["GYD","GY$","Guyanese Dollar"],["HTG","G","Haitian Gourde"],
+];
+
+function fmtMoney(n){
+  const sym = (G.room && G.room.currency && G.room.currency.symbol) || "£";
+  return sym + (n!=null ? n : 0);
+}
+
+// ── Firebase REST ─────────────────────────────────────────────────────
+async function dbPatch(code, path, data) {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}/${path}.json`, {
+      method:"PATCH", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error("status "+r.status);
+    return true;
+  } catch(e) {
+    console.warn("Firebase PATCH unavailable:", e.message);
+    return false;
+  }
+}
+
+async function dbWrite(code, data) {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json`, {
+      method:"PUT", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error("status "+r.status);
+    return true;
+  } catch(e) {
+    try { localStorage.setItem("gp_"+code, JSON.stringify(data)); } catch(_){}
+    console.warn("Firebase unavailable, using localStorage:", e.message);
+    return false;
+  }
+}
+
+async function dbDelete(code) {
+  try {
+    await fetch(`${FIREBASE_URL}/rooms/${code}.json`, {method:"DELETE"});
+    try { localStorage.removeItem("gp_"+code); } catch(_){}
+    return true;
+  } catch(e) { return false; }
+}
+
+// Firebase Realtime DB strips empty arrays/objects/null on write.
+function normalizeRoom(d) {
+  if (!d || typeof d !== "object") return d;
+  d.score = d.score || {p1:0, p2:0};
+  if (typeof d.score.p1 !== "number") d.score.p1 = 0;
+  if (typeof d.score.p2 !== "number") d.score.p2 = 0;
+  d.history = Array.isArray(d.history) ? d.history : [];
+  d.rps = d.rps || {};
+  d.rps.wins = d.rps.wins || {p1:0, p2:0};
+  if (typeof d.rps.wins.p1 !== "number") d.rps.wins.p1 = 0;
+  if (typeof d.rps.wins.p2 !== "number") d.rps.wins.p2 = 0;
+  d.currency = d.currency || {code:"GBP", symbol:"£"};
+  if (!d.currency.symbol) d.currency.symbol = "£";
+  d.p1 = d.p1 || "";
+  d.p2 = d.p2 || "";
+  d.budget = typeof d.budget === "number" ? d.budget : 0;
+  d.locked = d.locked || false;
+  if (d.lastSpinTarget === undefined) d.lastSpinTarget = null;
+  return d;
+}
+
+async function dbRead(code) {
+  try {
+    const r = await fetch(`${FIREBASE_URL}/rooms/${code}.json?nc=${Date.now()}`, {cache:"no-store"});
+    if (!r.ok) throw new Error("status "+r.status);
+    let d; try { d = await r.json(); } catch(_){ d = null; }
+    return (d && typeof d === "object") ? normalizeRoom(d) : null;
+  } catch(e) {
+    try {
+      const s = localStorage.getItem("gp_"+code);
+      return s ? normalizeRoom(JSON.parse(s)) : null;
+    } catch(_){ return null; }
+  }
+}
+
+let _poll = null;
+let _pausePoll = false;
+function startPolling(code) {
+  stopPolling();
+  _poll = setInterval(async () => {
+    if (_pausePoll) return;
+    try {
+      const data = await dbRead(code);
+      if (!data) return;
+      const vChanged = typeof data.v === "number" && data.v > G.lastV;
+      const rpsChanged = data.phase === "rps" && data.rps && G.room &&
+        (data.rps.p1c !== (G.room.rps?.p1c ?? null) ||
+         data.rps.p2c !== (G.room.rps?.p2c ?? null));
+      if (vChanged || rpsChanged) {
+        if (vChanged) G.lastV = data.v;
+        const prev = G.room;
+        G.room = data;
+        onRemoteUpdate(data, prev);
+      }
+    } catch(e) { console.error("Poll error:", e); }
+  }, 1500);
+}
+function stopPolling() {
+  if (_poll) { clearInterval(_poll); _poll = null; }
+}
+
+// ── Wheel ─────────────────────────────────────────────────────────────
+const SEGS=[
+  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
+  {amt:50, col:"#0A6868"},{amt:150,col:"#2A1250"},
+  {amt:100,col:"#0D9678"},{amt:200,col:"#9A6E10"},
+  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
+  {amt:250,col:"#682878"},{amt:50, col:"#0A6868"},
+  {amt:100,col:"#0D9678"},{amt:300,col:"#8C2424"},
+];
+const NSEG=SEGS.length, SA=(2*Math.PI)/NSEG;
+let wheelRot=0, isSpinning=false;
+
+function drawWheel(rot) {
+  const c=document.getElementById("wCanvas"); if(!c) return;
+  const ctx=c.getContext("2d"), cx=c.width/2, cy=c.height/2, r=cx-5;
+  ctx.clearRect(0,0,c.width,c.height);
+  SEGS.forEach((s,i)=>{
+    const a0=rot+i*SA-Math.PI/2, a1=a0+SA;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
+    ctx.fillStyle=s.col; ctx.fill();
+    ctx.strokeStyle="rgba(8,3,18,.85)"; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(a0+SA/2);
+    ctx.textAlign="right"; ctx.fillStyle="#F4EDD5";
+    ctx.font="600 "+(s.amt>=250?11:13)+"px sans-serif";
+    ctx.shadowColor="rgba(0,0,0,.8)"; ctx.shadowBlur=3;
+    ctx.fillText(fmtMoney(s.amt),r-10,5); ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,20,0,2*Math.PI);
+  ctx.fillStyle="#080312"; ctx.fill();
+  ctx.strokeStyle="#D4A843"; ctx.lineWidth=2.5; ctx.stroke();
+  ctx.fillStyle="#D4A843"; ctx.font="13px serif";
+  ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("✈",cx,cy);
+}
+
+function calcSpinEnd(startRot, targetIdx, extraSpins) {
+  const targetAngle = ((-(targetIdx + 0.5) * SA) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const afterExtrasMod = ((startRot + extraSpins) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+  const alignDelta = (targetAngle - afterExtrasMod + 2*Math.PI) % (2*Math.PI);
+  return startRot + extraSpins + alignDelta;
+}
+
+function animateSpin(onDone, forcedIdx) {
+  if (isSpinning) return;
+  isSpinning = true;
+  const targetIdx = (forcedIdx !== undefined) ? forcedIdx : Math.floor(Math.random() * NSEG);
+  const seg = SEGS[targetIdx];
+  const extraSpins = (6 + Math.floor(Math.random() * 5)) * 2 * Math.PI;
+  const end = calcSpinEnd(wheelRot, targetIdx, extraSpins);
+  const dur = 4200 + Math.random() * 1000;
+  const startRot = wheelRot;
+  const startTime = performance.now();
+  const ease = t => 1 - Math.pow(1 - t, 4);
+  function step(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / dur, 1);
+    wheelRot = startRot + (end - startRot) * ease(progress);
+    drawWheel(wheelRot);
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      wheelRot = end;
+      isSpinning = false;
+      drawWheel(wheelRot);
+      setTimeout(() => onDone(seg), 300);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// ── State ─────────────────────────────────────────────────────────────
+const BEATS={rock:"scissors",paper:"rock",scissors:"paper"};
+const EMOJ_MAP={rock:"ROCK_ICON",paper:"📄",scissors:"✂️"}; // rock is rendered specially
+function emojiFor(c){
+  if(c==="rock") return '<span class="rock-icon"></span>';
+  if(c==="paper") return "📄";
+  if(c==="scissors") return "✂️";
+  return "";
+}
+function emojiBig(c){
+  if(c==="rock") return '<span class="rock-icon lg"></span>';
+  if(c==="paper") return "📄";
+  if(c==="scissors") return "✂️";
+  return "";
+}
+
+const CODE_ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // 24 letters (no I/O)
+function genCode(len){
+  len = len || 4;
+  return Array.from({length:len},()=>CODE_ALPHA[Math.floor(Math.random()*CODE_ALPHA.length)]).join("");
+}
+function sanitizeCode(s){
+  return (s||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,12);
+}
+
+function mkRoom(opts){
+  const p1 = opts.p1 || "";
+  const cur = opts.currency || {code:"GBP", symbol:"£"};
+  const budget = Math.max(0, parseInt(opts.budget)||0);
+  const now = Date.now();
+  return{v:1,p1,p2:"",ready:false,phase:"rps",day:1,
+    currency:cur, budget,
+    score:{p1:0,p2:0},
+    rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null},
+    spinner:null,spins:0,lastAmt:null,lastSpinTarget:null,rpsWinner:null,history:[],
+    locked:false,
+    firstPlayedAt:now,lastPlayedAt:now};
+}
+let G={myId:"",myName:"",code:"",room:null,lastV:0,rpsModalActive:false};
+
+function roomUpdate(fn){
+  if(G.myId==="spectator") return; // spectators never write
+  const next=fn(G.room);
+  next.v=(G.room?.v||0)+1;
+  next.lastPlayedAt=Date.now();
+  G.lastV=next.v; G.room=next;
+  dbWrite(G.code,next);
+  renderGame();
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function toast(msg,dur=3500){
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),dur);
+}
+function openModal(id){ document.getElementById(id).classList.add("show"); }
+function closeModal(id){ document.getElementById(id).classList.remove("show"); }
+
+// ── Recent rooms (localStorage) ───────────────────────────────────────
+const REC_KEY = "gp_recent";
+function loadRecent(){
+  try { return JSON.parse(localStorage.getItem(REC_KEY)||"[]"); } catch(_){ return []; }
+}
+function saveRecent(code, myId, myName){
+  let list = loadRecent().filter(r => r.code !== code);
+  list.unshift({code, myId, myName, ts:Date.now()});
+  list = list.slice(0,10);
+  try { localStorage.setItem(REC_KEY, JSON.stringify(list)); } catch(_){}
+}
+function renderRecent(){
+  // Legacy — no-op now; rooms shown in step 2
+}
+
+// ── Two-step home ─────────────────────────────────────────────────────
+function findMyRooms(){
+  const name = document.getElementById("inp-name").value.trim();
+  if(!name){ toast("✏️ Enter your name first"); return; }
+
+  // Find rooms this user has been in (by name match in localStorage)
+  const allRecent = loadRecent();
+  const myRooms = allRecent.filter(r =>
+    r.myId !== "spectator" && r.myName && r.myName.toLowerCase() === name.toLowerCase()
+  );
+
+  // Show step 2
+  document.getElementById("home-step1-card").classList.add("hidden");
+  document.getElementById("home-step2").classList.remove("hidden");
+  document.getElementById("home-footer").classList.add("hidden");
+
+  const wrap = document.getElementById("my-rooms-wrap");
+  const ul = document.getElementById("my-rooms-list");
+  const orDiv = document.getElementById("rooms-or-div");
+  ul.innerHTML = "";
+
+  if(myRooms.length){
+    wrap.classList.remove("hidden");
+    orDiv.textContent = "Or join / create another room";
+    myRooms.forEach(r=>{
+      const d = document.createElement("div");
+      d.className = "recent-room";
+      const role = r.myId.toUpperCase();
+      d.innerHTML = `<span class="rcode">${r.code}</span><span style="color:rgba(244,237,213,.6)">${r.myName}</span><span class="rrole">${role}</span>`;
+      d.onclick = () => {
+        document.getElementById("inp-code").value = r.code;
+        document.getElementById("inp-code").focus();
+      };
+      ul.appendChild(d);
+    });
+  } else {
+    wrap.classList.add("hidden");
+    orDiv.textContent = "Enter or create a room";
+  }
+
+  // Pre-fill URL room code if present
+  if(window._urlRoom){
+    document.getElementById("inp-code").value = window._urlRoom;
+  }
+
+  setTimeout(()=>document.getElementById("inp-code").focus(), 150);
+}
+
+function backToIdentify(){
+  document.getElementById("home-step1-card").classList.remove("hidden");
+  document.getElementById("home-step2").classList.add("hidden");
+  document.getElementById("home-footer").classList.remove("hidden");
+  setTimeout(()=>document.getElementById("inp-name").focus(), 100);
+}
+
+// ── Currency picker ───────────────────────────────────────────────────
+function buildCurrencyPicker(){
+  const sel = document.getElementById("inp-currency");
+  CURRENCIES.forEach(([code,sym,name])=>{
+    const o = document.createElement("option");
+    o.value = code; o.textContent = `${code} — ${sym} — ${name}`;
+    if(code==="GBP") o.selected = true;
+    sel.appendChild(o);
+  });
+}
+function getCurrencyByCode(code){
+  const f = CURRENCIES.find(c=>c[0]===code);
+  return f ? {code:f[0], symbol:f[1]} : {code:"GBP", symbol:"£"};
+}
+
+// ── Confirm modal helper ──────────────────────────────────────────────
+let _cfmResolve = null;
+function confirmDlg(title, sub){
+  return new Promise(res=>{
+    document.getElementById("cfm-ttl").textContent = title;
+    document.getElementById("cfm-sub").textContent = sub;
+    _cfmResolve = res;
+    openModal("modal-confirm");
+  });
+}
+function cfmResolve(v){
+  closeModal("modal-confirm");
+  if(_cfmResolve){ const r = _cfmResolve; _cfmResolve = null; r(v); }
+}
+
+// ── Claim modal helper ────────────────────────────────────────────────
+let claimResolve = null;
+function showClaim(p1n, p2n){
+  return new Promise(res=>{
+    document.getElementById("claim-sub").textContent = `This room has ${p1n} (P1) and ${p2n} (P2). Who are you?`;
+    document.getElementById("claim-p1n").textContent = p1n;
+    document.getElementById("claim-p2n").textContent = p2n;
+    claimResolve = res;
+    openModal("modal-claim");
+  });
+}
+function doClaim(slot){
+  closeModal("modal-claim");
+  if(claimResolve){ const r = claimResolve; claimResolve = null; r(slot); }
+}
+
+// ── Entry flow ────────────────────────────────────────────────────────
+function suggestCode(){
+  document.getElementById("inp-code").value = genCode(5);
+}
+
+async function enterRoom(){
+  const name = document.getElementById("inp-name").value.trim();
+  const codeRaw = document.getElementById("inp-code").value.trim();
+  const code = sanitizeCode(codeRaw);
+  if(!name){ toast("✏️ Enter your name first"); return; }
+  if(code.length < 3){ toast("Room name must be at least 3 letters/digits"); return; }
+
+  const btn = document.getElementById("btn-enter");
+  btn.disabled = true; btn.textContent = "Entering…";
+  try {
+    const existing = await dbRead(code);
+
+    // Case 1: room doesn't exist → CREATE
+    if(!existing){
+      const curCode = document.getElementById("inp-currency").value;
+      const budgetVal = parseInt(document.getElementById("inp-budget").value)||0;
+      const room = mkRoom({p1:name, currency:getCurrencyByCode(curCode), budget:budgetVal});
+      const ok = await dbWrite(code, room);
+      G.myId="p1"; G.myName=name; G.code=code; G.room=room; G.lastV=1;
+      saveRecent(code, "p1", name);
+      document.getElementById("lob-code").textContent = code;
+      const link = location.origin + location.pathname + "?room=" + code;
+      document.getElementById("lob-link").textContent = "📋 " + link;
+      show("s-lobby");
+      if(!ok) toast("⚠️ No internet sync — works on this device only.");
+      startPolling(code);
+      return;
+    }
+
+    // Case 2: name matches p1 → CONFIRM + RESUME
+    const lc = name.toLowerCase();
+    if(existing.p1 && existing.p1.toLowerCase() === lc){
+      const ok = await confirmDlg("Continue as "+existing.p1+"?", "You are P1 in room "+code+".");
+      if(!ok) return;
+      G.myId="p1"; G.myName=existing.p1; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "p1", existing.p1);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+    if(existing.p2 && existing.p2.toLowerCase() === lc){
+      const ok = await confirmDlg("Continue as "+existing.p2+"?", "You are P2 in room "+code+".");
+      if(!ok) return;
+      G.myId="p2"; G.myName=existing.p2; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "p2", existing.p2);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+
+    // Case 3: p2 slot empty → JOIN as p2
+    if(!existing.p2){
+      const updated = {...existing, p2:name, ready:true, v:(existing.v||0)+1, lastPlayedAt:Date.now()};
+      await dbWrite(code, updated);
+      G.myId="p2"; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
+      saveRecent(code, "p2", name);
+      startPolling(code); show("s-game"); renderGame(); return;
+    }
+
+    // Case 4: both filled, name matches neither → CLAIM modal
+    const slot = await showClaim(existing.p1, existing.p2);
+    if(!slot) return;
+    if(slot === "spectator"){
+      G.myId="spectator"; G.myName=name; G.code=code; G.room=existing; G.lastV=existing.v||1;
+      saveRecent(code, "spectator", name);
+      startPolling(code); show("s-game"); renderGame();
+      toast("👁 Spectating "+code);
+      return;
+    }
+    // Claim p1 or p2 → overwrite that slot's name
+    const updated = {...existing, [slot]:name, ready:true, v:(existing.v||0)+1, lastPlayedAt:Date.now()};
+    await dbWrite(code, updated);
+    G.myId=slot; G.myName=name; G.code=code; G.room=updated; G.lastV=updated.v;
+    saveRecent(code, slot, name);
+    startPolling(code); show("s-game"); renderGame();
+    toast("Claimed slot "+slot.toUpperCase());
+
+  } catch(e){
+    toast("❌ Could not enter room — check connection");
+    console.error("enterRoom:", e);
+  } finally {
+    btn.disabled = false; btn.textContent = "Enter Room →";
+  }
+}
+
+function copyLink(){
+  const link=location.origin+location.pathname+"?room="+G.code;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(link).then(()=>toast("✅ Link copied! Send to your companion ✈"));
+  } else {
+    prompt("Copy this link:",link);
+  }
+}
+
+// ── Remote sync ───────────────────────────────────────────────────────
+let _lastSeenSpinKey = "";
+let _lastRpsKey = ""; // "day-roundsPlayed" — detects new RPS reveals
+
+function rpsRevealKey(d){
+  // A reveal is "new" when result is set AND lastP1/lastP2 are present
+  if(!d || !d.rps || !d.rps.result || !d.rps.lastP1 || !d.rps.lastP2) return "";
+  // Use day + total wins as a stable key per round
+  return d.day + "-" + ((d.rps.wins.p1||0)+(d.rps.wins.p2||0)) + "-" + d.rps.lastP1 + d.rps.lastP2;
+}
+
+function onRemoteUpdate(data, prev){
+  const cur=document.querySelector(".screen.active")?.id;
+
+  // Lobby → game transition (host sees opponent join)
+  if(cur==="s-lobby" && data.p2 && data.p1===G.myName){
+    toast("🎉 "+data.p2+" joined! Starting…");
+    setTimeout(()=>{show("s-game");renderGame();},1200);
+    return;
+  }
+
+  // Detect RPS reveal — fires for both players + spectators
+  const revealKey = rpsRevealKey(data);
+  if(revealKey && revealKey !== _lastRpsKey){
+    _lastRpsKey = revealKey;
+    showRpsModal(data);
+    // fall through to also handle spin mirroring etc.
+  }
+
+  // p1 resolves RPS when both choices are in
+  if(data.phase==="rps" && data.rps.p1c && data.rps.p2c && G.myId==="p1"){
+    resolveRPS(data); return;
+  }
+
+  // Observer: mirror spinner's animation
+  if((data.phase==="wheel"||data.phase==="done") &&
+      data.spinner && data.spinner!==G.myId &&
+      data.spins>0 && data.lastAmt!=null && !isSpinning){
+    const spinKey=data.day+"-"+data.spins;
+    if(spinKey!==_lastSeenSpinKey){
+      _lastSeenSpinKey=spinKey;
+      const matching=SEGS.map((s,i)=>({s,i})).filter(({s})=>s.amt===data.lastAmt);
+      if(matching.length){
+        const forcedIdx=matching[Math.floor(Math.random()*matching.length)].i;
+        _pausePoll=true;
+        animateSpin(()=>{ _pausePoll=false; renderGame(); }, forcedIdx);
+        return;
+      }
+    }
+  }
+  renderGame();
+}
+
+// ── RPS reveal modal w/ 5s circular countdown ─────────────────────────
+let _cdTimer = null;
+let _cdRaf = null;
+function showRpsModal(data){
+  const r = data;
+  const myId = G.myId === "spectator" ? "p1" : G.myId; // spectator default perspective
+  const oppId = myId === "p1" ? "p2" : "p1";
+  const myName = G.myId==="spectator" ? r.p1 : G.myName;
+  const oppName = G.myId==="spectator" ? r.p2 : (G.myId==="p1" ? r.p2 : r.p1);
+  const myHand = r.rps[myId==="p1"?"lastP1":"lastP2"];
+  const oppHand = r.rps[myId==="p1"?"lastP2":"lastP1"];
+  document.getElementById("rpsm-h1").innerHTML = emojiBig(myHand);
+  document.getElementById("rpsm-h2").innerHTML = emojiBig(oppHand);
+  document.getElementById("rpsm-n1").textContent = myName + (G.myId!=="spectator" ? " (you)" : "");
+  document.getElementById("rpsm-n2").textContent = oppName;
+  const banner = document.getElementById("rpsm-banner");
+  banner.className = "rps-banner";
+  if(r.rps.result === "draw"){ banner.textContent = "Draw!"; banner.classList.add("draw"); }
+  else if(r.rps.result === myId && G.myId !== "spectator"){ banner.textContent = "You win this round!"; banner.classList.add("win"); }
+  else if(G.myId === "spectator"){
+    const wn = r.rps.result === "p1" ? r.p1 : r.p2;
+    banner.textContent = wn + " wins!"; banner.classList.add("win");
+  }
+  else { banner.textContent = oppName + " wins this round!"; banner.classList.add("lose"); }
+
+  G.rpsModalActive = true;
+  openModal("modal-rps");
+
+  const ring = document.getElementById("cd-ring");
+  const numEl = document.getElementById("cd-num");
+  const C = 2 * Math.PI * 32; // 201.06
+  ring.setAttribute("stroke-dasharray", C.toFixed(2));
+  ring.setAttribute("stroke-dashoffset", "0");
+  // force reflow
+  void ring.getBoundingClientRect();
+  ring.style.transition = "stroke-dashoffset 5s linear";
+  ring.setAttribute("stroke-dashoffset", C.toFixed(2));
+
+  let n = 5;
+  numEl.textContent = n;
+  if(_cdTimer) clearInterval(_cdTimer);
+  _cdTimer = setInterval(()=>{
+    n -= 1;
+    numEl.textContent = Math.max(n,0);
+    if(n <= 0){ clearInterval(_cdTimer); _cdTimer = null; closeRpsModal(); }
+  }, 1000);
+
+  // also auto-dismiss after 5s as failsafe
+  setTimeout(()=>{ if(G.rpsModalActive) closeRpsModal(); }, 5100);
+}
+function dismissRpsModal(ev){
+  if(ev && ev.target.closest && ev.target.closest(".modal-card")) return;
+  closeRpsModal();
+}
+function closeRpsModal(){
+  if(!G.rpsModalActive) return;
+  G.rpsModalActive = false;
+  if(_cdTimer){ clearInterval(_cdTimer); _cdTimer = null; }
+  const ring = document.getElementById("cd-ring");
+  if(ring){ ring.style.transition = "none"; ring.setAttribute("stroke-dashoffset","0"); }
+  closeModal("modal-rps");
+  renderGame();
+}
+document.addEventListener("keydown",(e)=>{
+  if(e.key === "Escape" && G.rpsModalActive) closeRpsModal();
+});
+
+// ── RPS ───────────────────────────────────────────────────────────────
+function castRPS(choice){
+  if(G.myId==="spectator") return;
+  const r=G.room; if(!r) return;
+  const f=G.myId==="p1"?"p1c":"p2c";
+  if(r.rps[f]) return;
+
+  G.room = {...G.room, rps:{...G.room.rps, [f]:choice}};
+  renderGame();
+
+  dbPatch(G.code, "rps", {[f]:choice}).catch(e=>console.warn("castRPS:", e));
+
+  if(G.myId==="p1" && G.room.rps.p1c && G.room.rps.p2c){
+    resolveRPS(G.room);
+  }
+}
+
+function resolveRPS(room){
+  const{p1c,p2c}=room.rps;
+  let res; if(p1c===p2c) res="draw"; else if(BEATS[p1c]===p2c) res="p1"; else res="p2";
+  const wins={p1:(room.rps.wins.p1||0), p2:(room.rps.wins.p2||0)};
+  if(res!=="draw") wins[res]++;
+  const winner=wins.p1>=2?"p1":wins.p2>=2?"p2":null;
+  // Winner automatically becomes the spinner — skip "pick" phase
+  if(winner){
+    roomUpdate(p=>({...p,rpsWinner:winner,phase:"wheel",spinner:winner,spins:0,lastAmt:null,lastSpinTarget:null,
+      rps:{wins,p1c:null,p2c:null,result:res,lastP1:p1c,lastP2:p2c}}));
+  } else {
+    roomUpdate(p=>({...p,rpsWinner:null,phase:"rps",
+      rps:{wins,p1c:null,p2c:null,result:res,lastP1:p1c,lastP2:p2c}}));
+  }
+}
+
+// ── Pot selection modal ───────────────────────────────────────────────
+let _potSelectResolve = null;
+function showPotSelectModal(spinNum){
+  return new Promise(res=>{
+    const r = G.room;
+    const winnerName = G.myId==="p1" ? r.p1 : r.p2;
+    document.getElementById("pot-spin-num").textContent = spinNum;
+    document.getElementById("pot-p1n").textContent = r.p1 || "Player 1";
+    document.getElementById("pot-p2n").textContent = r.p2 || "Player 2";
+    document.getElementById("pot-winner-badge").textContent = "🏆 " + winnerName + " — you won!";
+    _potSelectResolve = res;
+    openModal("modal-pot");
+  });
+}
+function selectPotTarget(pid){
+  closeModal("modal-pot");
+  if(_potSelectResolve){ const r=_potSelectResolve; _potSelectResolve=null; r(pid); }
+}
+
+// ── Spin ──────────────────────────────────────────────────────────────
+let spinLock = false;
+async function doSpin(){
+  if(G.myId==="spectator") return;
+  const r=G.room;
+  if(!r || r.spinner!==G.myId || r.spins>=3 || isSpinning || spinLock) return;
+
+  // Ask whose pot gets this spin before each spin
+  const spinNum = r.spins + 1;
+  const potTarget = await showPotSelectModal(spinNum);
+  if(!potTarget) return;
+
+  spinLock = true;
+  _pausePoll = true;
+  document.getElementById("btn-spin").disabled=true;
+  const spinsAtStart = r.spins;
+  animateSpin(seg=>{
+    if(!seg || typeof seg.amt !== "number"){
+      console.error("Bad segment", seg);
+      spinLock = false; _pausePoll = false;
+      document.getElementById("btn-spin").disabled=false;
+      return;
+    }
+    spawnConfetti();
+    const newSpins = spinsAtStart + 1;
+    const newPhase = newSpins >= 3 ? "done" : "wheel";
+    const base = normalizeRoom({...G.room || r});
+    const newScore = {...base.score, [potTarget]:(base.score[potTarget]||0)+seg.amt};
+    const newHistory = [...base.history, {day:base.day, who:potTarget, spinner:G.myId, amt:seg.amt}];
+    const newRoom = {...base, score:newScore, spins:newSpins, lastAmt:seg.amt, lastSpinTarget:potTarget,
+                    history:newHistory, phase:newPhase, v:(base.v||0)+1, lastPlayedAt:Date.now()};
+    G.lastV = newRoom.v;
+    G.room  = newRoom;
+    dbWrite(G.code, newRoom);
+    spinLock = false;
+    renderGame();
+    setTimeout(() => { _pausePoll = false; }, 2500);
+  });
+}
+
+function nextDay(){
+  if(G.myId==="spectator") return;
+  _lastSeenSpinKey="";
+  _lastRpsKey="";
+  _roundSummaryShownForDay = -1;
+  roomUpdate(p=>({...p,day:p.day+1,phase:"rps",spins:0,lastAmt:null,lastSpinTarget:null,
+    spinner:null,rpsWinner:null,
+    rps:{wins:{p1:0,p2:0},p1c:null,p2c:null,result:null,lastP1:null,lastP2:null}}));
+}
+
+// ── Budget track rendering ────────────────────────────────────────────
+function renderBudgetTrack(prefix, r){
+  const wrap = document.getElementById(prefix==="bt"?"budget-track-wrap":"round-budget-section");
+  if(!r || !r.budget || r.budget <= 0){ if(wrap) wrap.classList.add("hidden"); return; }
+  if(wrap) wrap.classList.remove("hidden");
+  const total = (r.score.p1||0) + (r.score.p2||0);
+  const pct = Math.min(100, (total / r.budget) * 100);
+  document.getElementById(prefix+"-current").textContent = fmtMoney(total);
+  document.getElementById(prefix+"-target").textContent = fmtMoney(r.budget);
+  document.getElementById(prefix+"-fill").style.width = pct + "%";
+  const milestones = [25, 50, 75, 100, 100]; // 5 icons, last two both at 100%
+  const msIds = prefix==="bt" ? ["bt-ms0","bt-ms1","bt-ms2","bt-ms3","bt-ms4"]
+                              : ["round-ms0","round-ms1","round-ms2","round-ms3","round-ms4"];
+  msIds.forEach((id, i) => {
+    const el = document.getElementById(id); if(!el) return;
+    el.classList.toggle("reached", pct >= (i < 4 ? (i+1)*25 : 100));
+  });
+}
+
+let _roundSummaryShownForDay = -1;
+
+// ── Render ────────────────────────────────────────────────────────────
+function renderGame(){
+  if(G.rpsModalActive) return;
+  const r=G.room; if(!r) return;
+  const cur=document.querySelector(".screen.active")?.id;
+  if(cur==="s-summary") return;
+  show("s-game");
+  const isSpec = G.myId==="spectator";
+  document.getElementById("spec-badge").classList.toggle("hidden", !isSpec);
+  const myId = isSpec ? "p1" : G.myId;
+  const opp = myId==="p1" ? "p2" : "p1";
+  const myN = isSpec ? r.p1 : G.myName;
+  const oppN = isSpec ? r.p2 : (G.myId==="p1" ? r.p2 : r.p1);
+  const myS = r.score[myId]||0, oppS = r.score[opp]||0;
+  const iSpin = !isSpec && r.spinner===G.myId;
+  document.getElementById("bme-n").textContent = myN + (isSpec ? " (P1)" : " (you)");
+  document.getElementById("bme-s").textContent = fmtMoney(myS);
+  document.getElementById("bopp-n").textContent = oppN || "Waiting…";
+  document.getElementById("bopp-s").textContent = fmtMoney(oppS);
+  document.getElementById("day-lbl").textContent = "Day " + r.day + " · Room " + G.code;
+  renderBudgetTrack("bt", r);
+
+  const sR=document.getElementById("sec-rps"),sW=document.getElementById("sec-whl");
+  [sR,sW].forEach(s=>s.classList.add("hidden"));
+
+  if(r.phase==="rps"){
+    sR.classList.remove("hidden");
+    const myC = isSpec ? r.rps.p1c : r.rps[G.myId==="p1"?"p1c":"p2c"];
+    const oppC = isSpec ? r.rps.p2c : r.rps[G.myId==="p1"?"p2c":"p1c"];
+    document.getElementById("rz-mn").textContent = myN;
+    document.getElementById("rz-on").textContent = oppN;
+    document.getElementById("rz-mw").textContent = r.rps.wins[myId]||0;
+    document.getElementById("rz-ow").textContent = r.rps.wins[opp]||0;
+    document.getElementById("rz-me").innerHTML = myC ? emojiFor(myC) : "✊";
+    document.getElementById("rz-oe").innerHTML = (myC && oppC) ? emojiFor(oppC) : (oppC ? "🤔" : "✊");
+    const bar=document.getElementById("rps-bar"); bar.className="sbar";
+    const res=r.rps.result;
+    if(isSpec){
+      if(!r.rps.p1c && !r.rps.p2c) bar.textContent="Both players choosing…";
+      else if(r.rps.p1c && r.rps.p2c) bar.textContent="Resolving…";
+      else bar.textContent="One player has chosen…";
+    } else if(!myC) bar.textContent="Choose your move!";
+    else if(!oppC) bar.textContent="⏳ Waiting for "+oppN+"…";
+    else if(res==="draw"){bar.textContent="It's a tie! Play again.";bar.classList.add("draw");}
+    else if(res===G.myId){bar.textContent="You win this round! 🎉";bar.classList.add("win");}
+    else{bar.textContent=oppN+" wins this round!";bar.classList.add("lose");}
+    document.getElementById("rps-choices").classList.toggle("hidden", isSpec);
+    document.querySelectorAll(".rps-btn").forEach(b=>{
+      b.disabled = isSpec || !!myC;
+      b.classList.remove("chosen");
+      if(myC && b.getAttribute("onclick").includes("'"+myC+"'")) b.classList.add("chosen");
+    });
+  }
+
+  if(r.phase==="wheel"||r.phase==="done"){
+    sW.classList.remove("hidden");
+    const spinN = r.spinner==="p1" ? r.p1 : r.p2;
+    const lastTargetN = r.lastSpinTarget ? (r.lastSpinTarget==="p1" ? r.p1 : r.p2) : spinN;
+    if(r.phase==="done"){
+      document.getElementById("whl-who").textContent = "Round complete!";
+    } else {
+      document.getElementById("whl-who").textContent = iSpin ? "Your turn to spin!" : spinN+" is spinning…";
+    }
+    [0,1,2].forEach(i=>{
+      const p=document.getElementById("pip"+i); p.className="pip";
+      if(i<r.spins) p.classList.add("done");
+      else if(i===r.spins&&r.phase==="wheel") p.classList.add("now");
+    });
+    const rw=document.getElementById("res-wrap");
+    if(r.lastAmt!==null && r.lastAmt!==undefined){
+      rw.classList.remove("hidden");
+      document.getElementById("res-amt").textContent = fmtMoney(r.lastAmt);
+      document.getElementById("res-plr").textContent = lastTargetN + "'s pot";
+      document.getElementById("res-tot").textContent = "Their total: " + fmtMoney(r.score[r.lastSpinTarget||r.spinner]||0);
+    } else rw.classList.add("hidden");
+    const obs=document.getElementById("obs-note");
+    if(!iSpin&&r.phase==="wheel"){obs.classList.remove("hidden");obs.textContent="👀 Watching "+spinN+" spin…";}
+    else obs.classList.add("hidden");
+    const sb=document.getElementById("btn-spin"),nd=document.getElementById("btn-next");
+    if(iSpin&&r.phase==="wheel"){
+      sb.classList.remove("hidden");
+      sb.disabled = isSpinning || spinLock;
+      sb.textContent=r.spins===0?"Spin the Wheel ✨":"Spin Again ("+(3-r.spins)+" left) ✨";
+    } else sb.classList.add("hidden");
+    // Hide "Next Day" — replaced by round summary modal
+    nd.classList.add("hidden");
+    drawWheel(wheelRot);
+
+    // Auto-show round summary when phase becomes "done"
+    if(r.phase==="done" && _roundSummaryShownForDay !== r.day){
+      _roundSummaryShownForDay = r.day;
+      setTimeout(showRoundSummary, 600);
+    }
+  }
+}
+
+// ── Summary ───────────────────────────────────────────────────────────
+function showSummary(){
+  const r=normalizeRoom(G.room); if(!r) return;
+  const isSpec = G.myId==="spectator";
+  const myId = isSpec ? "p1" : G.myId;
+  const opp = myId==="p1"?"p2":"p1";
+  const myN = isSpec ? r.p1 : G.myName;
+  const oppN = isSpec ? r.p2 : (G.myId==="p1"?r.p2:r.p1);
+  const hist=r.history;
+  const players=[
+    {id:myId, name:myN, score:r.score[myId]||0, spins:hist.filter(h=>h.who===myId).length},
+    {id:opp,  name:oppN,score:r.score[opp]||0,  spins:hist.filter(h=>h.who===opp).length},
+  ].sort((a,b)=>b.score-a.score);
+  const re=document.getElementById("sum-rows"); re.innerHTML="";
+  players.forEach((p,i)=>{
+    const d=document.createElement("div"); d.className="sum-row"; d.style.animationDelay=i*.1+"s";
+    const youTag = (!isSpec && p.id===G.myId) ? " (you)" : "";
+    d.innerHTML='<div class="srank">'+["①","②"][i]+'</div><div class="sinfo"><div class="sname">'+p.name+youTag+'</div><div class="sdet">'+p.spins+' spin'+(p.spins!==1?"s":"")+" · Day"+(r.day>1?"s":"")+' 1–'+r.day+'</div></div><div class="samt">'+fmtMoney(p.score)+'</div>';
+    re.appendChild(d);
+  });
+  document.getElementById("sum-total").textContent = fmtMoney((r.score.p1||0)+(r.score.p2||0));
+  const meta = document.getElementById("sum-meta");
+  const days = r.day || 1;
+  const first = r.firstPlayedAt ? new Date(r.firstPlayedAt).toLocaleDateString() : "—";
+  meta.textContent = "Room "+G.code+" · "+r.currency.code+" · "+days+" day"+(days!==1?"s":"")+" · since "+first;
+  const he=document.getElementById("sum-hist"); he.innerHTML="";
+  if(hist.length>0){
+    const lbl=document.createElement("div");
+    lbl.style.cssText="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,237,213,.3);margin:12px 0 6px";
+    lbl.textContent="Spin History"; he.appendChild(lbl);
+    hist.forEach(h=>{
+      const d=document.createElement("div"); d.className="hrow";
+      const who = h.who==="p1" ? r.p1 : r.p2;
+      d.innerHTML='<span class="hday">Day '+h.day+'</span><span>'+who+'</span><span class="hamt">'+fmtMoney(h.amt)+'</span>';
+      he.appendChild(d);
+    });
+  }
+  show("s-summary");
+}
+
+function backToGame(){show("s-game");renderGame();}
+
+// ── Round summary ─────────────────────────────────────────────────────
+function showRoundSummary(){
+  const r = normalizeRoom(G.room); if(!r) return;
+  document.getElementById("round-day-lbl").textContent = "Day " + r.day + " wrap-up — " + G.code;
+  const rows = document.getElementById("round-pot-rows"); rows.innerHTML = "";
+  const isSpec = G.myId==="spectator";
+  const myId = isSpec ? "p1" : G.myId;
+  [{id:"p1",name:r.p1},{id:"p2",name:r.p2}].forEach(p=>{
+    const d = document.createElement("div"); d.className = "round-pot-row";
+    const youTag = (!isSpec && p.id===G.myId) ? '<span class="round-pot-you"> (you)</span>' : "";
+    d.innerHTML = '<div><div class="round-pot-name">🪴 '+p.name+youTag+'</div></div>'
+                +'<div class="round-pot-amt">'+fmtMoney(r.score[p.id]||0)+'</div>';
+    rows.appendChild(d);
+  });
+  renderBudgetTrack("round-bt", r);
+
+  const total = (r.score.p1||0)+(r.score.p2||0);
+  const budgetReached = r.budget > 0 && total >= r.budget;
+  const nextBtn = document.getElementById("round-next-btn");
+  if(budgetReached){
+    nextBtn.textContent = "See Results →";
+    nextBtn.className = "btn btn-gold btn-full";
+  } else {
+    nextBtn.textContent = "Next Day →";
+    nextBtn.className = "btn btn-teal btn-full";
+  }
+  openModal("modal-round");
+}
+
+async function proceedFromRoundSummary(){
+  closeModal("modal-round");
+  const r = G.room;
+  const total = (r.score.p1||0)+(r.score.p2||0);
+  if(r.budget > 0 && total >= r.budget){
+    await showCongratsModal(r);
+    return;
+  }
+  nextDay();
+}
+
+function showCongratsModal(r){
+  return new Promise(res=>{
+    const roomName = G.code;
+    document.getElementById("congrats-msg").textContent =
+      'Congratulations! You have achieved your target for "'+roomName+'"! '
+      +'Close the game to lock in the budget, or keep playing?';
+    openModal("modal-congrats");
+    window._congratsResolve = res;
+  });
+}
+
+function closeAndLockRoom(){
+  closeModal("modal-congrats");
+  if(G.myId!=="spectator"){
+    roomUpdate(p=>({...p, locked:true}));
+  }
+  if(window._congratsResolve){ const r=window._congratsResolve; window._congratsResolve=null; r(true); }
+  showSummary();
+}
+
+function continueAfterTarget(){
+  closeModal("modal-congrats");
+  if(window._congratsResolve){ const r=window._congratsResolve; window._congratsResolve=null; r(false); }
+  nextDay();
+}
+
+function leaveRoom(){
+  stopPolling();
+  G={myId:"",myName:"",code:"",room:null,lastV:0,rpsModalActive:false};
+  _lastSeenSpinKey="";
+  _lastRpsKey="";
+  _roundSummaryShownForDay = -1;
+  wheelRot=0; isSpinning=false; drawWheel(0);
+  // Reset home to step 1
+  document.getElementById("home-step1-card").classList.remove("hidden");
+  document.getElementById("home-step2").classList.add("hidden");
+  document.getElementById("home-footer").classList.remove("hidden");
+  show("s-home");
+}
+
+async function resetRoom(){
+  if(G.myId==="spectator"){ toast("Spectators can't reset the room"); return; }
+  if(!confirm("⚠️ Permanently delete this room's data?\nAll scores and history will be lost.")) return;
+  const code = G.code;
+  await dbDelete(code);
+  toast("Room "+code+" was reset");
+  leaveRoom();
+}
+
+// ── Confetti ──────────────────────────────────────────────────────────
+function spawnConfetti(){
+  const cols=["#D4A843","#F0CC6E","#15B89F","#F4EDD5","#7A3E8A","#C04040"];
+  for(let i=0;i<50;i++){
+    const p=document.createElement("div"); p.className="cf";
+    const dur=(1.5+Math.random()*2).toFixed(2),del=(Math.random()*.45).toFixed(2);
+    p.style.cssText="left:"+Math.random()*100+"vw;top:-8px;width:7px;height:7px;background:"+cols[i%cols.length]+";animation-duration:"+dur+"s;animation-delay:"+del+"s";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),(+dur+ +del+.2)*1000);
+  }
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────
+buildCurrencyPicker();
+drawWheel(0);
+
+window._urlRoom = null;
+const _urlRoomRaw = new URLSearchParams(location.search).get("room");
+if(_urlRoomRaw){
+  window._urlRoom = sanitizeCode(_urlRoomRaw);
+  document.getElementById("home-sub").textContent =
+    "You've been invited to room "+window._urlRoom+". Enter your name to continue.";
+}
+setTimeout(()=>document.getElementById("inp-name").focus(), 300);
+
+// expose for tests
+window.__GP = {
+  CURRENCIES, fmtMoney, genCode, sanitizeCode, mkRoom, normalizeRoom,
+  SEGS, BEATS, calcSpinEnd, NSEG, SA, getCurrencyByCode
+};
+</script>
+</body>
+</html>
