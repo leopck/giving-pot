@@ -18,9 +18,7 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;animation:natureglow 1
     radial-gradient(ellipse 80% 55% at 50% 118%,rgba(6,45,16,.9) 0%,transparent 52%),
     radial-gradient(ellipse 38% 28% at 28% 68%,rgba(40,110,55,.1) 0%,transparent 40%),
     #04100a}
-body::after{content:'';position:fixed;bottom:0;left:0;right:0;
-  height:clamp(120px,26vh,220px);z-index:0;pointer-events:none;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 220' preserveAspectRatio='xMidYMax slice'%3E%3Cellipse cx='60' cy='185' rx='52' ry='60' fill='%23020c04' opacity='.85'/%3E%3Cellipse cx='170' cy='175' rx='62' ry='72' fill='%23030e05' opacity='.9'/%3E%3Cellipse cx='295' cy='180' rx='55' ry='65' fill='%23020c04' opacity='.85'/%3E%3Cellipse cx='415' cy='170' rx='68' ry='78' fill='%23030e05' opacity='.9'/%3E%3Cellipse cx='540' cy='178' rx='58' ry='68' fill='%23020c04' opacity='.85'/%3E%3Cellipse cx='665' cy='172' rx='64' ry='75' fill='%23030e05' opacity='.9'/%3E%3Cellipse cx='780' cy='182' rx='50' ry='62' fill='%23020c04' opacity='.85'/%3E%3Crect x='51' y='200' width='18' height='20' fill='%23020903'/%3E%3Crect x='161' y='198' width='18' height='22' fill='%23030a04'/%3E%3Crect x='286' y='202' width='18' height='18' fill='%23020903'/%3E%3Crect x='406' y='196' width='18' height='24' fill='%23030a04'/%3E%3Crect x='531' y='200' width='18' height='20' fill='%23020903'/%3E%3Crect x='656' y='197' width='18' height='23' fill='%23030a04'/%3E%3Crect x='771' y='201' width='18' height='19' fill='%23020903'/%3E%3Crect x='0' y='210' width='800' height='10' fill='%23020903'/%3E%3C/svg%3E") bottom/100% auto no-repeat}
+body::after{content:''}
 @keyframes natureglow{0%,100%{opacity:1}50%{opacity:.78}}
 .serif{font-family:'Cormorant Garamond',serif}
 .gt{font-family:'Cormorant Garamond',serif;font-weight:700;
@@ -107,14 +105,14 @@ select option{background:#08030F;color:#F4EDD5}
 .sbar.draw{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.28);color:#D4A843}
 .wheel-wrap{position:relative;width:min(280px,82vw);height:min(280px,82vw)}
 .wptr{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:0;height:0;
-  border-left:11px solid transparent;border-right:11px solid transparent;border-top:21px solid #D4A843;
-  filter:drop-shadow(0 3px 8px rgba(212,168,67,.75));z-index:5}
+  border-left:11px solid transparent;border-right:11px solid transparent;border-top:21px solid #FF7BAC;
+  filter:drop-shadow(0 3px 8px rgba(255,123,168,.75));z-index:5}
 #wCanvas{width:100%;height:100%;border-radius:50%;
-  box-shadow:0 0 0 5px rgba(212,168,67,.28),0 16px 50px rgba(0,0,0,.6)}
+  box-shadow:0 0 0 5px rgba(255,123,168,.35),0 16px 50px rgba(0,0,0,.6)}
 .pips{display:flex;gap:7px;justify-content:center;margin-top:8px}
 .pip{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.12);transition:all .3s}
-.pip.done{background:#0A7A68}
-.pip.now{background:#D4A843;box-shadow:0 0 8px #D4A843}
+.pip.done{background:#FF7BAC}
+.pip.now{background:#FFCC44;box-shadow:0 0 8px #FFCC44}
 .spin-result{background:linear-gradient(135deg,#100626,#081018);border:2px solid #D4A843;
   border-radius:17px;padding:20px 26px;text-align:center;
   box-shadow:0 0 44px rgba(212,168,67,.2);max-width:260px;width:100%;
@@ -817,12 +815,18 @@ function stopPolling() {
 
 // ── Wheel ─────────────────────────────────────────────────────────────
 const SEGS=[
-  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
-  {amt:50, col:"#0A6868"},{amt:150,col:"#2A1250"},
-  {amt:100,col:"#0D9678"},{amt:200,col:"#9A6E10"},
-  {amt:50, col:"#0A6868"},{amt:100,col:"#0D9678"},
-  {amt:250,col:"#682878"},{amt:50, col:"#0A6868"},
-  {amt:100,col:"#0D9678"},{amt:300,col:"#8C2424"},
+  {amt:50,  col:"#FF7BAC", lgt:"#FFC8DC"},
+  {amt:100, col:"#52D1BC", lgt:"#AAF0E6"},
+  {amt:50,  col:"#FFA060", lgt:"#FFD0A8"},
+  {amt:150, col:"#A882E8", lgt:"#D4C4F8"},
+  {amt:100, col:"#52D1BC", lgt:"#AAF0E6"},
+  {amt:200, col:"#FFCC44", lgt:"#FFF0A0"},
+  {amt:50,  col:"#FF7BAC", lgt:"#FFC8DC"},
+  {amt:100, col:"#72BAF0", lgt:"#C0E4F8"},
+  {amt:250, col:"#C26AE0", lgt:"#E4B8F8"},
+  {amt:50,  col:"#FFA060", lgt:"#FFD0A8"},
+  {amt:100, col:"#52D1BC", lgt:"#AAF0E6"},
+  {amt:300, col:"#FF6878", lgt:"#FFB8C0"},
 ];
 const NSEG=SEGS.length, SA=(2*Math.PI)/NSEG;
 let wheelRot=0, isSpinning=false;
@@ -831,22 +835,52 @@ function drawWheel(rot) {
   const c=document.getElementById("wCanvas"); if(!c) return;
   const ctx=c.getContext("2d"), cx=c.width/2, cy=c.height/2, r=cx-5;
   ctx.clearRect(0,0,c.width,c.height);
+
+  // outer glow ring
+  const ringGrad = ctx.createRadialGradient(cx,cy,r-4,cx,cy,r+4);
+  ringGrad.addColorStop(0,"rgba(255,180,210,.55)");
+  ringGrad.addColorStop(1,"rgba(255,180,210,0)");
+  ctx.beginPath(); ctx.arc(cx,cy,r+4,0,2*Math.PI);
+  ctx.fillStyle=ringGrad; ctx.fill();
+
   SEGS.forEach((s,i)=>{
     const a0=rot+i*SA-Math.PI/2, a1=a0+SA;
+    // radial gradient per segment
+    const mid = a0+SA/2;
+    const gx0 = cx + (r*0.35)*Math.cos(mid), gy0 = cy + (r*0.35)*Math.sin(mid);
+    const gx1 = cx + r*Math.cos(mid),        gy1 = cy + r*Math.sin(mid);
+    const grad = ctx.createLinearGradient(gx0,gy0,gx1,gy1);
+    grad.addColorStop(0, s.lgt);
+    grad.addColorStop(1, s.col);
     ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a0,a1); ctx.closePath();
-    ctx.fillStyle=s.col; ctx.fill();
-    ctx.strokeStyle="rgba(8,3,18,.85)"; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle=grad; ctx.fill();
+    // white separator
+    ctx.strokeStyle="rgba(255,255,255,.55)"; ctx.lineWidth=1.8; ctx.stroke();
+    // amount text
     ctx.save(); ctx.translate(cx,cy); ctx.rotate(a0+SA/2);
-    ctx.textAlign="right"; ctx.fillStyle="#F4EDD5";
-    ctx.font="600 "+(s.amt>=250?11:13)+"px sans-serif";
-    ctx.shadowColor="rgba(0,0,0,.8)"; ctx.shadowBlur=3;
-    ctx.fillText(fmtMoney(s.amt),r-10,5); ctx.restore();
+    ctx.textAlign="right"; ctx.fillStyle="#fff";
+    ctx.font="700 "+(s.amt>=250?11:13)+"px 'Outfit',sans-serif";
+    ctx.shadowColor="rgba(0,0,0,.35)"; ctx.shadowBlur=4;
+    ctx.fillText(fmtMoney(s.amt), r-10, 5);
+    // sparkle accent
+    ctx.font="9px serif"; ctx.shadowBlur=0;
+    ctx.fillText("✦", r-10, -8);
+    ctx.restore();
   });
-  ctx.beginPath(); ctx.arc(cx,cy,20,0,2*Math.PI);
-  ctx.fillStyle="#080312"; ctx.fill();
-  ctx.strokeStyle="#D4A843"; ctx.lineWidth=2.5; ctx.stroke();
-  ctx.fillStyle="#D4A843"; ctx.font="13px serif";
-  ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("✈",cx,cy);
+
+  // center hub — pink radial gradient
+  const hubGrad = ctx.createRadialGradient(cx-4,cy-4,2,cx,cy,22);
+  hubGrad.addColorStop(0,"#FFD6EA");
+  hubGrad.addColorStop(0.55,"#FF7BAC");
+  hubGrad.addColorStop(1,"#D94080");
+  ctx.beginPath(); ctx.arc(cx,cy,22,0,2*Math.PI);
+  ctx.fillStyle=hubGrad; ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,.7)"; ctx.lineWidth=2.5; ctx.stroke();
+  // cherry blossom icon
+  ctx.fillStyle="#fff"; ctx.font="15px serif";
+  ctx.textAlign="center"; ctx.textBaseline="middle";
+  ctx.shadowColor="rgba(200,60,100,.5)"; ctx.shadowBlur=4;
+  ctx.fillText("✿",cx,cy);
 }
 
 function calcSpinEnd(startRot, targetIdx, extraSpins) {
