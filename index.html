@@ -174,6 +174,27 @@ input[type=number]{width:100%;background:rgba(255,255,255,.07);border:1px solid 
 input[type=number]:focus{border-color:#D4A843}
 input[type=number]::placeholder{color:rgba(244,237,213,.3)}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+/* ── Lobby URL box ──────────────────────────────────────────────── */
+.lob-url-box{background:rgba(255,255,255,.03);border:1px dashed rgba(212,168,67,.28);
+  border-radius:10px;padding:12px 14px;font-size:11px;font-family:monospace;
+  color:rgba(244,237,213,.55);word-break:break-all;line-height:1.7;text-align:left;
+  user-select:all;cursor:text;letter-spacing:.3px}
+/* ── RPS win tally ──────────────────────────────────────────────── */
+.rps-tally{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  width:100%;max-width:400px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(212,168,67,.18);border-radius:14px;padding:13px 18px}
+.tally-side{display:flex;flex-direction:column;gap:5px;min-width:0}
+.tally-side.right{align-items:flex-end}
+.tally-name{font-size:12px;font-weight:500;color:rgba(244,237,213,.65);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.tally-stars{display:flex;gap:5px}
+.tally-star{font-size:24px;line-height:1;transition:transform .25s,color .25s}
+.tally-star.filled{color:#EEC85A;text-shadow:0 0 10px rgba(238,200,90,.55)}
+.tally-star.empty{color:rgba(255,255,255,.13)}
+.tally-star.filled{animation:starpopin .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes starpopin{from{transform:scale(.4)}to{transform:scale(1)}}
+.tally-mid{font-family:'Cormorant Garamond',serif;font-size:12px;color:rgba(244,237,213,.28);
+  text-align:center;line-height:1.5;flex-shrink:0}
 /* ── Pot select modal ───────────────────────────────────────────── */
 .pot-winner-badge{display:inline-block;padding:4px 12px;border-radius:50px;
   background:rgba(18,176,148,.15);border:1px solid rgba(18,176,148,.3);
@@ -288,15 +309,15 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="room-code" id="lob-code">----</div>
       <div style="font-size:13px;color:rgba(244,237,213,.4);margin-top:4px">Share this name with your companion</div>
     </div>
-    <div class="card col" style="gap:13px;text-align:center">
-      <div id="lob-link" style="font-size:12px;color:rgba(244,237,213,.45);word-break:break-all;line-height:1.6;padding:4px 2px"></div>
-      <div class="row" style="justify-content:center;gap:9px">
-        <button class="btn btn-ghost" onclick="copyLink()">📋 Copy Link</button>
-        <button class="btn btn-gold" onclick="enterGameRoom()">Enter Room →</button>
-      </div>
+    <div class="card col" style="gap:14px">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,237,213,.3);text-align:center">Invite link — tap to select, then copy</div>
+      <div id="lob-link" class="lob-url-box"></div>
+      <button class="btn btn-ghost btn-full" onclick="copyLink()">📋 Copy Invite Link</button>
       <div style="height:1px;background:rgba(212,168,67,.1)"></div>
       <div class="pw" id="lob-wait"><div class="pdot"></div>Waiting for companion to join…</div>
-      <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()" style="margin-top:4px">← Leave Room</button>
+      <div style="height:1px;background:rgba(212,168,67,.1)"></div>
+      <button class="btn btn-gold btn-full" style="padding:15px;font-size:15px" onclick="enterGameRoom()">Enter Room →</button>
+      <button class="btn btn-ghost btn-tiny" onclick="leaveRoom()" style="margin-top:2px">← Leave Room</button>
     </div>
   </div>
 </div>
@@ -333,17 +354,35 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <!-- RPS -->
     <div id="sec-rps" class="col" style="align-items:center;gap:12px">
       <div class="gt" style="font-size:clamp(24px,6vw,38px);line-height:1.1;text-align:center">Rock · Paper<br>Scissors</div>
+
+      <!-- Win tally -->
+      <div class="rps-tally">
+        <div class="tally-side">
+          <div class="tally-name" id="tally-n1">You</div>
+          <div class="tally-stars" id="tally-s1">
+            <span class="tally-star empty">★</span>
+            <span class="tally-star empty">★</span>
+          </div>
+        </div>
+        <div class="tally-mid">First to<br>2 wins</div>
+        <div class="tally-side right">
+          <div class="tally-name" id="tally-n2">Opponent</div>
+          <div class="tally-stars" id="tally-s2">
+            <span class="tally-star empty">★</span>
+            <span class="tally-star empty">★</span>
+          </div>
+        </div>
+      </div>
+
       <div class="rps-grid">
         <div class="rps-zone me">
           <div class="rzn" id="rz-mn">Me</div>
           <div class="rze" id="rz-me">✊</div>
-          <div class="rzs" id="rz-mw">0</div>
         </div>
         <div class="rps-vs">vs</div>
         <div class="rps-zone">
           <div class="rzn" id="rz-on">Opp</div>
           <div class="rze" id="rz-oe">✊</div>
-          <div class="rzs" id="rz-ow">0</div>
         </div>
       </div>
       <div class="sbar" id="rps-bar">Choose your move!</div>
@@ -1313,10 +1352,15 @@ function renderGame(){
     const oppC = isSpec ? r.rps.p2c : r.rps[G.myId==="p1"?"p2c":"p1c"];
     document.getElementById("rz-mn").textContent = myN;
     document.getElementById("rz-on").textContent = oppN;
-    document.getElementById("rz-mw").textContent = r.rps.wins[myId]||0;
-    document.getElementById("rz-ow").textContent = r.rps.wins[opp]||0;
     document.getElementById("rz-me").innerHTML = myC ? emojiFor(myC) : "✊";
     document.getElementById("rz-oe").innerHTML = (myC && oppC) ? emojiFor(oppC) : (oppC ? "🤔" : "✊");
+    // Win tally stars
+    const mkStars = (wins) =>
+      [0,1].map(i=>`<span class="tally-star ${i<wins?"filled":"empty"}">★</span>`).join("");
+    document.getElementById("tally-n1").textContent = myN;
+    document.getElementById("tally-n2").textContent = oppN;
+    document.getElementById("tally-s1").innerHTML = mkStars(r.rps.wins[myId]||0);
+    document.getElementById("tally-s2").innerHTML = mkStars(r.rps.wins[opp]||0);
     const bar=document.getElementById("rps-bar"); bar.className="sbar";
     const res=r.rps.result;
     if(isSpec){
