@@ -1091,12 +1091,16 @@ function rpsRevealKey(d){
 function onRemoteUpdate(data, prev){
   const cur=document.querySelector(".screen.active")?.id;
 
-  // Lobby — notify host when companion joins, but don't auto-navigate
-  if(cur==="s-lobby" && data.p2 && data.p1===G.myName){
-    const waitEl = document.getElementById("lob-wait");
-    if(waitEl) waitEl.innerHTML = '<span style="color:#4ECDC4">🎉 '+data.p2+' joined! Tap Enter Room to start.</span>';
-    toast("🎉 "+data.p2+" joined!");
-    return;
+  // Lobby — never let polling navigate away; only update the waiting message
+  if(cur==="s-lobby"){
+    G.room = data;
+    G.lastV = data.v || G.lastV;
+    if(data.p2 && data.p1===G.myName){
+      const waitEl = document.getElementById("lob-wait");
+      if(waitEl) waitEl.innerHTML = '<span style="color:#4ECDC4">🎉 '+data.p2+' joined! Tap Enter Room to start.</span>';
+      toast("🎉 "+data.p2+" joined!");
+    }
+    return; // always stay in lobby until user taps Enter Room
   }
 
   // Detect RPS reveal — fires for both players + spectators
@@ -1327,6 +1331,7 @@ function renderGame(){
   const r=G.room; if(!r) return;
   const cur=document.querySelector(".screen.active")?.id;
   if(cur==="s-summary") return;
+  if(cur==="s-lobby") return; // user must tap Enter Room — never auto-leave lobby
   show("s-game");
   const isSpec = G.myId==="spectator";
   document.getElementById("spec-badge").classList.toggle("hidden", !isSpec);
